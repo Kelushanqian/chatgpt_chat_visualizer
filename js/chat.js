@@ -18,6 +18,8 @@ if (typeof marked !== 'undefined') {
 document.addEventListener("DOMContentLoaded", function () {
   setupFileHandling();
   setupSearch();
+  setupThemeToggle();
+  loadTheme();
   showEmptyState();
 });
 
@@ -463,4 +465,66 @@ function formatDate(timestamp) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+// ================== 主题切换功能 ==================
+
+/**
+ * 设置主题切换功能
+ */
+function setupThemeToggle() {
+  const themeToggle = document.getElementById("themeToggle");
+  if (themeToggle) {
+    themeToggle.addEventListener("click", toggleTheme);
+  }
+}
+
+/**
+ * 切换主题
+ */
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  
+  setTheme(newTheme);
+  saveTheme(newTheme);
+}
+
+/**
+ * 设置主题
+ */
+function setTheme(theme) {
+  const root = document.documentElement;
+  
+  root.setAttribute("data-theme", theme);
+  
+  setTimeout(() => {
+    root.style.transition = "";
+  }, 300);
+}
+
+/**
+ * 保存主题到本地存储
+ */
+function saveTheme(theme) {
+  try {
+    localStorage.setItem("chatgpt-viewer-theme", theme);
+  } catch (error) {
+    console.warn("无法保存主题设置:", error);
+  }
+}
+
+/**
+ * 从本地存储加载主题
+ */
+function loadTheme() {
+  try {
+    const savedTheme = localStorage.getItem("chatgpt-viewer-theme");
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    const theme = savedTheme || systemTheme;
+    
+    setTheme(theme);
+  } catch (error) {
+    setTheme("light"); // 默认浅色主题
+  }
 }
