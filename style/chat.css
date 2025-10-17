@@ -14,41 +14,41 @@
   --bg-upload: rgba(255, 255, 255, 0.5);
   --bg-upload-hover: rgba(255, 255, 255, 0.8);
   --bg-upload-drag: rgba(244, 231, 241, 0.5);
-  
+
   /* 文本色 */
   --text-primary: #4a4a4a;
   --text-secondary: #6b5b73;
   --text-tertiary: #8b7088;
   --text-muted: #9b8b9b;
-  
+
   /* 主色调 */
   --color-primary: #b38eb6;
   --color-primary-hover: #a888b5;
   --color-primary-dark: #9777a6;
-  
+
   /* 边框色 */
   --border-primary: rgba(139, 112, 136, 0.2);
   --border-hover: #b89fc4;
   --border-active: #b89fc4;
   --border-input: rgba(139, 112, 136, 0.2);
   --border-input-focus: #b89fc4;
-  
+
   /* 统计卡片 */
   --bg-stat: linear-gradient(135deg, #f4e7f1 0%, #f7e9f4 100%);
   --border-stat: rgba(139, 112, 136, 0.15);
-  
+
   /* 消息背景 */
   --bg-message-user: linear-gradient(135deg, #f4e7f1 0%, #f7e9f4 100%);
   --bg-message-assistant: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
   --border-message-user: rgba(139, 112, 136, 0.2);
   --border-message-assistant: rgba(99, 156, 207, 0.2);
-  
+
   /* 按钮色 */
   --bg-btn-primary: linear-gradient(135deg, #b89fc4 0%, #a888b5 100%);
   --bg-btn-primary-hover: linear-gradient(135deg, #a888b5 0%, #9777a6 100%);
   --bg-btn-secondary: linear-gradient(135deg, #e8dde4 0%, #f2e9ef 100%);
   --bg-btn-secondary-hover: linear-gradient(135deg, #ddd0d9 0%, #e8dde4 100%);
-  
+
   /* 阴影 */
   --shadow-card: 0 8px 25px rgba(139, 112, 136, 0.1);
   --shadow-btn-primary: 0 6px 20px rgba(139, 112, 136, 0.3);
@@ -56,7 +56,7 @@
   --shadow-focus: 0 4px 12px rgba(139, 112, 136, 0.15);
   --shadow-hover: 0 4px 15px rgba(139, 112, 136, 0.15);
   --shadow-active: 0 4px 15px rgba(139, 112, 136, 0.2);
-  
+
   /* 滚动条 */
   --scrollbar-track: transparent;
   --scrollbar-thumb: rgba(139, 112, 136, 0.3);
@@ -71,41 +71,41 @@
   --bg-upload: rgba(60, 60, 60, 0.5);
   --bg-upload-hover: rgba(70, 70, 70, 0.8);
   --bg-upload-drag: rgba(80, 60, 80, 0.5);
-  
+
   /* 文本色 */
   --text-primary: #e0e0e0;
   --text-secondary: #c0b0c0;
   --text-tertiary: #ab8cab;
   --text-muted: #808080;
-  
+
   /* 主色调 */
   --color-primary: #a58cba;
   --color-primary-hover: #9774b5;
   --color-primary-dark: #8663a6;
-  
+
   /* 边框色 */
   --border-primary: rgba(168, 133, 199, 0.3);
   --border-hover: #a885c7;
   --border-active: #a885c7;
   --border-input: rgba(168, 133, 199, 0.3);
   --border-input-focus: #a885c7;
-  
+
   /* 统计卡片 */
   --bg-stat: linear-gradient(135deg, #3d3a3f 0%, #4a4448 100%);
   --border-stat: rgba(168, 133, 199, 0.25);
-  
+
   /* 消息背景 */
   --bg-message-user: linear-gradient(135deg, #3d3a3f 0%, #4a4448 100%);
   --bg-message-assistant: linear-gradient(135deg, #2a3a4d 0%, #3d4d5f 100%);
   --border-message-user: rgba(168, 133, 199, 0.3);
   --border-message-assistant: rgba(99, 156, 207, 0.3);
-  
+
   /* 按钮色 */
   --bg-btn-primary: linear-gradient(135deg, #a885c7 0%, #9774b5 100%);
   --bg-btn-primary-hover: linear-gradient(135deg, #9774b5 0%, #8663a6 100%);
   --bg-btn-secondary: linear-gradient(135deg, #4a4448 0%, #5a5458 100%);
   --bg-btn-secondary-hover: linear-gradient(135deg, #5a5458 0%, #6a6468 100%);
-  
+
   /* 阴影 */
   --shadow-card: 0 8px 25px rgba(0, 0, 0, 0.3);
   --shadow-btn-primary: 0 6px 20px rgba(168, 133, 199, 0.4);
@@ -113,14 +113,15 @@
   --shadow-focus: 0 4px 12px rgba(168, 133, 199, 0.25);
   --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.25);
   --shadow-active: 0 4px 15px rgba(168, 133, 199, 0.3);
-  
+
   /* 滚动条 */
   --scrollbar-track: transparent;
   --scrollbar-thumb: rgba(168, 133, 199, 0.4);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei",
+    sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
@@ -345,10 +346,9 @@ body {
   color: var(--text-tertiary);
 }
 
-/* 消息显示区域 */
 .messages-container {
   font-size: 0.9rem;
-  max-height: 500px;
+  max-height: 700px;
   overflow-y: auto;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   border: 2px solid var(--border-primary);
@@ -382,7 +382,7 @@ body {
 }
 
 .message.assistant .message-content em {
-  color: #72AEC5;
+  color: #72aec5;
 }
 
 .message-author {
@@ -426,7 +426,7 @@ body {
   background: var(--bg-upload);
   padding: 2px 6px;
   border-radius: 4px;
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: "Consolas", "Monaco", "Courier New", monospace;
   border: 1px solid var(--border-primary);
 }
 
@@ -542,11 +542,14 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* 空状态 */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -621,7 +624,7 @@ body {
   .header {
     margin-bottom: 20px;
   }
-  
+
   .header h1 {
     font-size: 1.8rem; /* 减小大标题字体 */
   }
@@ -629,7 +632,7 @@ body {
   .header p {
     font-size: 0.9rem;
   }
-  
+
   /* 仪表板从两列变为一列 */
   .dashboard {
     grid-template-columns: 1fr; /* 关键：变为单列布局 */
@@ -640,45 +643,41 @@ body {
   .stats-grid {
     gap: 10px;
   }
-  
+
   /* 控制面板和按钮 */
   .controls {
     flex-direction: column;
     gap: 10px;
   }
-  
+
+  .conversation-list {
+    max-height: 400px;
+  }
+
   .search-box,
   .filter-select {
-    width: 100%; /* 搜索框和筛选框占据全宽 */
+    width: 100%;
   }
 
   .export-section button {
-    width: 100%; /* 导出按钮占据全宽 */
+    width: 100%;
     margin-bottom: 10px;
-  }
-  
-  /* 对话列表和消息区域 */
-  .conversation-list {
-    max-height: 350px; /* 适当减小列表高度 */
   }
 
   .messages-container {
     padding: 10px;
   }
   
-  /* 消息卡片间距 */
   .message.user {
-    margin-left: 10%; /* 减小左右边距 */
+    margin-left: 10%;
   }
   
   .message.assistant {
-    margin-right: 10%; /* 减小左右边距 */
+    margin-right: 10%;
   }
   
   .conversation-header {
     flex-direction: column;
     gap: 10px;
-    align-items: flex-start; /* 左对齐标题和按钮 */
   }
-  /* 聊天图表在小屏上可能太宽，不作额外调整（当前已是单列布局） */
 }
