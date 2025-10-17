@@ -200,7 +200,7 @@ body {
 /* 仪表板布局 */
 .dashboard {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 2fr;
   gap: 20px;
 }
 
@@ -306,7 +306,7 @@ body {
 
 /* 对话列表 */
 .conversation-list {
-  max-height: 300px;
+  max-height: 450px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
@@ -569,40 +569,116 @@ body {
   display: none;
 }
 
+.daily-chart {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.chart-title {
+  color: var(--text-primary);
+}
+
+.chart-container {
+  height: 150px;
+  padding: 10px;
+  overflow-x: auto; /* 允许在数据过多时滚动 */
+  border-radius: var(--border-radius);
+  background: var(--bg-card-hover);
+}
+
+.chart-inner {
+  display: flex;
+  align-items: flex-end; /* 柱子从底部向上生长 */
+  height: 100%;
+  min-width: 100%; /* 确保在数据少时也能铺满 */
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.chart-bar {
+  background-color: var(--color-primary);
+  margin: 0 1px;
+  transition: all 0.3s ease;
+  border-radius: 2px 2px 0 0;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.chart-bar:hover {
+  opacity: 1;
+  background-color: var(--color-primary-hover);
+}
+
 /* 响应式设计 */
+/* chat.css (在文件末尾的 @media (max-width: 768px) 块内修改或新增) */
+
 @media (max-width: 768px) {
-  .dashboard {
-    grid-template-columns: 1fr;
+  /* 基础布局调整 */
+  .container {
+    padding: 15px; /* 减小页边距 */
+  }
+
+  /* 头部调整 */
+  .header {
+    margin-bottom: 20px;
   }
   
+  .header h1 {
+    font-size: 1.8rem; /* 减小大标题字体 */
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
+  
+  /* 仪表板从两列变为一列 */
+  .dashboard {
+    grid-template-columns: 1fr; /* 关键：变为单列布局 */
+    gap: 15px;
+  }
+
+  /* 统计网格从两列变为一列，保证垂直空间 */
+  .stats-grid {
+    gap: 10px;
+  }
+  
+  /* 控制面板和按钮 */
   .controls {
     flex-direction: column;
+    gap: 10px;
   }
   
+  .search-box,
+  .filter-select {
+    width: 100%; /* 搜索框和筛选框占据全宽 */
+  }
+
+  .export-section button {
+    width: 100%; /* 导出按钮占据全宽 */
+    margin-bottom: 10px;
+  }
+  
+  /* 对话列表和消息区域 */
+  .conversation-list {
+    max-height: 350px; /* 适当减小列表高度 */
+  }
+
+  .messages-container {
+    padding: 10px;
+  }
+  
+  /* 消息卡片间距 */
   .message.user {
-    margin-left: 10px;
+    margin-left: 10%; /* 减小左右边距 */
   }
   
   .message.assistant {
-    margin-right: 10px;
+    margin-right: 10%; /* 减小左右边距 */
   }
   
   .conversation-header {
     flex-direction: column;
     gap: 10px;
+    align-items: flex-start; /* 左对齐标题和按钮 */
   }
-  
-  .header-content {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .title-section {
-    order: 1;
-  }
-  
-  .theme-toggle {
-    order: 2;
-    justify-content: center;
-  }
+  /* 聊天图表在小屏上可能太宽，不作额外调整（当前已是单列布局） */
 }
