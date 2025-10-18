@@ -329,15 +329,13 @@ function renderMessage(msg) {
   const roleClass = msg.role;
   const displayName = msg.role === "user" ? "You" : "Agent";
   const contentHtml = renderMarkdown(msg.content);
-  const editInfo =
-    msg.updateTime && msg.updateTime !== msg.createTime ? " (已编辑)" : "";
 
   return `
     <div class="message ${roleClass}">
       <div class="message-author">${displayName}</div>
       <div class="message-content">${contentHtml}</div>
       <div class="message-time">
-        ${formatDate(msg.createTime)}${editInfo}
+        ${formatDate(msg.createTime)}
       </div>
     </div>
   `;

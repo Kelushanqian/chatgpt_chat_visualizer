@@ -120,8 +120,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei",
-    sans-serif;
+  font-family: "Noto Serif SC", serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
@@ -196,6 +195,7 @@ body {
 
 .card h2 {
   color: var(--text-secondary);
+  text-align: center;
 }
 
 /* 仪表板布局 */
@@ -235,10 +235,10 @@ body {
 
 /* 控制面板 */
 .controls {
+  margin-bottom: 10px;
   display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+  gap: 10px;
+  flex-wrap: wrap; /* 允许换行，适应小屏幕 */
 }
 
 .search-box,
@@ -302,15 +302,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 /* 对话列表 */
 .conversation-list {
-  max-height: 450px;
+  max-height: 460px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  font-family: sans-serif;
 }
 
 .conversation-item {
@@ -335,7 +336,7 @@ body {
 }
 
 .conversation-title {
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 5px;
   color: var(--text-secondary);
 }
@@ -359,15 +360,16 @@ body {
 
 .message {
   margin-bottom: 20px;
-  padding: 15px 20px;
+  padding: 10px 15px;
   border-radius: 15px;
   position: relative;
   transition: all 0.3s ease;
+  font-family: sans-serif;
 }
 
 .message.user {
   background: var(--bg-message-user);
-  margin-left: 20%;
+  margin-left: 30%;
   border: 1px solid var(--border-message-user);
 }
 
@@ -377,7 +379,7 @@ body {
 
 .message.assistant {
   background: var(--bg-message-assistant);
-  margin-right: 20%;
+  margin-right: 30%;
   border: 1px solid var(--border-message-assistant);
 }
 
@@ -388,7 +390,7 @@ body {
 .message-author {
   font-weight: 600;
   font-size: 0.9rem;
-  margin-bottom: 8px;
+  margin-bottom: 0.1em;
 }
 
 .message.user .message-author {
@@ -424,18 +426,20 @@ body {
 
 .message-content code {
   background: var(--bg-upload);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: "Consolas", "Monaco", "Courier New", monospace;
+  padding: 0 0.2em;
+  font-family: "Consolas", monospace;
   border: 1px solid var(--border-primary);
 }
 
 .message-content pre {
   background: var(--bg-upload);
-  padding: 12px;
-  border-radius: 8px;
-  overflow-x: auto;
+  padding: 0 0.2em;
+  margin: 1em 0;
+  white-space: pre-wrap;        /* 保持空格和换行，但允许自动换行 */
+  word-wrap: break-word;        /* 长单词强制换行 */
+  overflow-wrap: break-word;
   border: 1px solid var(--border-primary);
+  border-radius: 5px;
 }
 
 .message-content pre code {
@@ -454,7 +458,6 @@ body {
 
 .message-content ul,
 .message-content ol {
-  margin: 8px 0;
   padding-left: 24px;
 }
 
@@ -665,19 +668,19 @@ body {
   }
 
   .messages-container {
-    padding: 10px;
+    padding: 0;
   }
-  
+
   .message.user {
-    margin-left: 10%;
+    margin-left: 5%;
   }
-  
+
   .message.assistant {
-    margin-right: 10%;
+    margin-right: 5%;
   }
-  
+
   .conversation-header {
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
   }
 }
