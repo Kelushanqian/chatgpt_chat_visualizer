@@ -274,6 +274,7 @@ body {
 .controls {
   margin-bottom: 20px;
   display: flex;
+  flex-wrap:wrap;
   gap: 10px;
 }
 
@@ -342,7 +343,7 @@ body {
 
 .conversations_container {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   gap: 10px;
 }
 
@@ -390,7 +391,7 @@ body {
 
 .messages-container {
   font-size: 0.9rem;
-  max-height: 700px;
+  max-height: 720px;
   overflow-y: auto;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   background: var(--bg-card);
@@ -407,7 +408,7 @@ body {
 
 .message.user {
   background: var(--bg-message-user);
-  margin-left: 20%;
+  margin-left: 35%;
   border: 2px solid var(--border-message-user);
 }
 
@@ -417,7 +418,7 @@ body {
 
 .message.assistant {
   background: var(--bg-message-assistant);
-  margin-right: 20%;
+  margin-right: 15%;
   border: 2px solid var(--border-message-assistant);
 }
 
@@ -472,7 +473,7 @@ body {
 .message-content pre {
   background: var(--bg-upload);
   padding: 0 0.2em;
-  margin: 1em 0;
+  margin: 0.3em 0;
   white-space: pre-wrap; /* 保持空格和换行，但允许自动换行 */
   word-wrap: break-word; /* 长单词强制换行 */
   overflow-wrap: break-word;
@@ -511,7 +512,8 @@ body {
 .message-content table {
   border-collapse: collapse;
   margin: 12px 0;
-  width: 100%;
+  display: block;
+  overflow-x: auto;
 }
 
 .message-content th,
@@ -662,7 +664,7 @@ body {
 
   /* 仪表板从两列变为一列 */
   .dashboard {
-    grid-template-columns: 1fr; /* 关键：变为单列布局 */
+    grid-template-columns: minmax(0, 1fr); /* 关键：变为单列布局 */
   }
 
   .stats-grid {
@@ -670,7 +672,7 @@ body {
   }
 
   .conversations_container {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 3px;
   }
 
