@@ -444,10 +444,8 @@ function exportAllData() {
     total_conversations: conversationsData.length,
     conversations: conversationsData.map((conv) => ({
       title: conv.title,
-      create_time: conv.create_time,
-      update_time: conv.update_time,
-      messages: conv.messages,
       message_count: conv.messageCount,
+      messages: conv.messages,
     })),
   };
 
