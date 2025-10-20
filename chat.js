@@ -353,8 +353,8 @@ function renderDailyTrendChart(dailyData) {
   const chartInner = document.createElement("div");
   chartInner.className = "chart-inner";
 
-  // 只显示最近 30 天的数据，避免图表过于拥挤
-  const dataToShow = dailyData.slice(-30);
+  // 只显示最近 20 天的数据，避免图表过于拥挤
+  const dataToShow = dailyData.slice(-20);
 
   dataToShow.forEach((item) => {
     const bar = document.createElement("div");
@@ -469,9 +469,9 @@ function downloadJSON(data, filename) {
 //状态管理
 
 function showLoading() {
-  document.getElementById("uploadSection").style.display = "none";
-  document.getElementById("loading").classList.remove("hidden");
+  document.getElementById("uploadSection").classList.add("hidden");
   document.getElementById("emptyState").classList.add("hidden");
+  document.getElementById("loading").classList.remove("hidden");
   document.getElementById("dashboard").classList.add("hidden");
 }
 
