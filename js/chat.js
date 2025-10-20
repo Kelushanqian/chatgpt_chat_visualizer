@@ -23,8 +23,21 @@ document.addEventListener("DOMContentLoaded", function () {
   showEmptyState();
 });
 
-//消息处理
+//返回文件上传功能
+function backToUpload() {
+  conversationsData = [];
+  currentConversation = null;
+  filteredConversations = [];
 
+  const fileInput = document.getElementById("fileInput");
+  if (fileInput) {
+    fileInput.value = "";
+  }
+  showEmptyState();
+  document.getElementById("backToUpload").classList.add("hidden");
+}
+
+//消息处理
 function extractMessages(conversation) {
   const messages = [];
   let currentNode = conversation.current_node;
@@ -286,7 +299,7 @@ function renderConversationList() {
           ${escapeHtml(conv.title || "未命名对话")}
         </div>
         <div class="conversation-meta">
-          ${conv.messageCount} 条消息 | ${formatDate(conv.lastUpdate)}
+          ${conv.messageCount} 条消息 | ${formatDate(conv.create_time)}
         </div>
       </div>
     `
@@ -343,42 +356,42 @@ function renderMessage(msg) {
 
 function renderDailyTrendChart(dailyData) {
   const container = document.getElementById("dailyTrendChart");
-
-  // 确保容器是空的
   container.innerHTML = "";
-
-  // 找出最大值，用于计算柱子高度
   const maxCount = Math.max(...dailyData.map((d) => d.count));
-
   const chartInner = document.createElement("div");
   chartInner.className = "chart-inner";
 
-  // 只显示最近 20 天的数据，避免图表过于拥挤
-  const dataToShow = dailyData.slice(-20);
+  const tooltip = document.createElement("div");
+  tooltip.className = "tooltip";
+  chartInner.appendChild(tooltip);
 
+  const dataToShow = dailyData.slice(-20);
   dataToShow.forEach((item) => {
     const bar = document.createElement("div");
     const heightPercent = (item.count / maxCount) * 100;
-
     bar.className = "chart-bar";
     bar.style.height = `${heightPercent}%`;
+    bar.style.flex = "1 1 0";
 
-    // 添加工具提示 (title)
-    bar.title = `${item.date}: ${item.count} 条`;
-
-    // 限制每个柱子的宽度，保持美观
-    bar.style.flex = "1 1 0"; // 灵活布局，保证柱子均匀分布
+    bar.addEventListener("click", () => {
+      tooltip.textContent = `${item.date}: ${item.count} 条`;
+      tooltip.style.opacity = 0.8;
+    });
 
     chartInner.appendChild(bar);
   });
 
   container.appendChild(chartInner);
 
-  // 可选：添加底部日期标签（省略以保持代码简洁，但这对于实际图表很重要）
+  // 点击空白处关闭
+  document.addEventListener("click", (e) => {
+    if (!chartInner.contains(e.target)) {
+      tooltip.style.opacity = 0;
+    }
+  });
 }
 
 //搜索和排序
-
 function setupSearch() {
   const searchBox = document.getElementById("searchBox");
   const sortSelect = document.getElementById("sortSelect");
@@ -400,7 +413,7 @@ function filterConversations() {
   switch (sortBy) {
     case "time":
       filteredConversations.sort(
-        (a, b) => (b.lastUpdate || 0) - (a.lastUpdate || 0)
+        (a, b) => (b.create_time || 0) - (a.create_time || 0)
       );
       break;
     case "messages":
@@ -483,6 +496,7 @@ function showDashboard() {
   document.getElementById("uploadSection").style.display = "none";
   document.getElementById("emptyState").classList.add("hidden");
   document.getElementById("dashboard").classList.remove("hidden");
+  document.getElementById("backToUpload").classList.remove("hidden");
 }
 
 function showEmptyState() {
