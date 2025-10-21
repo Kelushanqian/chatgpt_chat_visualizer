@@ -5,8 +5,9 @@ import {
   aggregateDailyMessageCounts,
   calculateStatistics,
 } from "./parser.js";
-import { favoritesManager, highlightsManager } from "./favorites.js";
+import { favoritesManager } from "./favorites.js";
 import uiManager from "./ui.js";
+import { formatDate } from "./ui.js";
 
 // 初始化应用
 async function initApp() {
@@ -17,7 +18,6 @@ async function initApp() {
 
     // 初始化收藏管理器
     await favoritesManager.init();
-    await highlightsManager.init();
     console.log("收藏数据加载成功");
 
     // 设置事件监听
@@ -59,8 +59,6 @@ async function loadDataFromDB(conversations) {
   const dailyCounts = aggregateDailyMessageCounts(conversationsWithMessages);
   uiManager.renderDailyTrendChart(dailyCounts);
   await uiManager.renderFavoritesList();
-  await uiManager.renderHighlightsList();
-
   uiManager.showDashboard();
 }
 
@@ -144,64 +142,74 @@ function setupSearch() {
 
 // 返回上传页面
 async function backToUpload() {
-  const confirmClear = confirm(
-    "返回上传页面将清空当前数据，是否继续？\n（数据仍保存在浏览器中，可重新打开页面恢复）"
-  );
-
-  if (!confirmClear) return;
-
-  uiManager.currentConversation = null;
-  uiManager.filteredConversations = [];
-  uiManager.allConversations = [];
-
+  clearDatabase();
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
     fileInput.value = "";
   }
-
   uiManager.showEmptyState();
   document.getElementById("backToUpload").classList.add("hidden");
 }
 
 // 导出功能
 async function exportConversation() {
-  if (!uiManager.currentConversation) {
-    alert("请先选择一个对话");
-    return;
-  }
-
   const conversation = uiManager.currentConversation;
-  const exportData = {
-    title: conversation.title,
-    create_time: conversation.create_time,
-    messages: conversation.messages,
-    message_count: conversation.messageCount,
-  };
-
-  downloadJSON(
-    exportData,
-    `conversation_${conversation.title || "untitled"}.json`
-  );
+  const markdown = generateConversationMarkdown(conversation);
+  const filename = conversation.title || "untitled";
+  downloadMarkdown(markdown, `${filename}.md`);
 }
 
 async function exportAllData() {
-  const conversations = await chatDB.getAllConversations();
-  const exportData = {
-    export_time: Date.now(),
-    total_conversations: conversations.length,
-    conversations: conversations.map((conv) => ({
-      title: conv.title,
-      message_count: conv.messageCount,
-      messages: conv.messages,
-    })),
-  };
-
-  downloadJSON(exportData, "all_conversations_export.json");
+  const conversations = await chatDB.getAllConversations(true);
+  conversations.sort((a, b) => (b.create_time || 0) - (a.create_time || 0));
+  const markdown = generateAllConversationsMarkdown(conversations);
+  downloadMarkdown(markdown, "所有对话的MarkDown文件.md");
 }
 
-function downloadJSON(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: "application/json",
+// 生成单个对话的 Markdown
+function generateConversationMarkdown(conversation) {
+  let markdown = `# ${conversation.title || "未命名对话"}\n\n`;
+  markdown += `create_time: ${formatDate(conversation.create_time)}\n\n`;
+  markdown += `messages_count: ${conversation.messageCount}\n\n`;
+
+  if (conversation.messages && conversation.messages.length > 0) {
+    conversation.messages.forEach((msg) => {
+      const roleLabel = msg.role === "user" ? "You" : "Agent";
+      markdown += `**${roleLabel}**\n\n`;
+      markdown += `${msg.content}\n\n`;
+      markdown += `*${formatDate(msg.createTime)}*\n\n`;
+    });
+  }
+  return markdown;
+}
+
+// 生成所有对话的 Markdown
+function generateAllConversationsMarkdown(conversations) {
+  let markdown = "";
+  markdown += `export_time: ${formatDate(Date.now() / 1000)}\n\n`;
+  markdown += `conversations_count: ${conversations.length}\n\n`;
+  markdown += `---\n\n`;
+
+  conversations.forEach((conv) => {
+    markdown += `# ${conv.title || "未命名对话"}\n\n`;
+    markdown += `create_time: ${formatDate(conv.create_time)}\n\n`;
+    markdown += `messages_count: ${conv.messageCount}\n\n`;
+    conv.messages.forEach((msg) => {
+      const roleLabel = msg.role === "user" ? "You" : "Agent";
+      markdown += `**${roleLabel}**\n\n`;
+      markdown += `${msg.content}\n\n`;
+      markdown += `*${formatDate(msg.createTime)}*\n\n`;
+    });
+    markdown += `\n---\n\n`;
+  });
+
+  return markdown;
+}
+
+// 下载 Markdown 文件
+function downloadMarkdown(content, filename) {
+  const blob = new Blob([content], {
+    type: "text/markdown;charset=utf-8",
   });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -261,21 +269,8 @@ function loadTheme() {
 
 // 清空数据库
 async function clearDatabase() {
-  const confirm = window.confirm(
-    "确定要清空所有数据吗？此操作不可恢复！"
-  );
-  if (!confirm) return;
-
-  try {
-    await chatDB.clearAll();
-    await favoritesManager.init();
-    await highlightsManager.init();
-    alert("数据已清空");
-    backToUpload();
-  } catch (error) {
-    console.error("清空数据失败:", error);
-    alert("清空数据失败");
-  }
+  await chatDB.clearAll();
+  await favoritesManager.init();
 }
 
 // 全局导出供HTML调用

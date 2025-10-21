@@ -191,42 +191,38 @@ header p {
   text-align: center;
 }
 
-.favorites-container .empty-state,
-.highlights-container .empty-state {
+.like-label {
+  opacity: 0.8;
+  font-family: sans-serif;
+}
+
+.favorites-container .empty-state {
   text-align: left;
 }
 
 .favorites-list,
-.highlights-list {
+.something-content {
   max-height: 390px;
   overflow-y: auto;
   border-top: solid 2px var(--border-primary);
 }
 
-.favorite-item,
-.highlight-item {
+.favorite-item {
   margin-bottom: 5px;
 }
 
-.favorite-item .favorite-title,
-.highlight-item .highlight-text {
+.favorite-item .favorite-title {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
 
-.highlight-item .highlight-title {
-  text-align: end;
-}
-
-.favorite-item .favorite-time,
-.highlight-item .highlight-title {
+.favorite-item .favorite-time {
   font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-.favorite-title:hover,
-.highlight-title:hover {
+.favorite-title:hover {
   color: var(--text-em);
   cursor: pointer;
 }

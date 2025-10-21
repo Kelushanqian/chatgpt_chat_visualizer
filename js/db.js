@@ -43,20 +43,6 @@ class ChatDatabase {
           });
           favStore.createIndex("timestamp", "timestamp", { unique: false });
         }
-
-        // 高亮/划线表
-        if (!db.objectStoreNames.contains("highlights")) {
-          const highlightStore = db.createObjectStore("highlights", {
-            keyPath: "id",
-            autoIncrement: true,
-          });
-          highlightStore.createIndex("conversationId", "conversationId", {
-            unique: false,
-          });
-          highlightStore.createIndex("messageId", "messageId", {
-            unique: false,
-          });
-        }
       };
     });
   }
@@ -123,14 +109,13 @@ class ChatDatabase {
   }
 
   // 收藏相关操作
-  async addFavorite(conversationId, note = "") {
+  async addFavorite(conversationId) {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(["favorites"], "readwrite");
       const store = tx.objectStore("favorites");
 
       const favorite = {
         conversationId,
-        note,
         timestamp: Date.now(),
       };
 
@@ -185,64 +170,9 @@ class ChatDatabase {
     });
   }
 
-  // 高亮/划线相关操作
-  async addHighlight(conversationId, messageId, text, color = "yellow", note = "") {
-    return new Promise((resolve, reject) => {
-      const tx = this.db.transaction(["highlights"], "readwrite");
-      const store = tx.objectStore("highlights");
-
-      const highlight = {
-        conversationId,
-        messageId,
-        text,
-        color,
-        note,
-        timestamp: Date.now(),
-      };
-
-      const request = store.add(highlight);
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async removeHighlight(highlightId) {
-    return new Promise((resolve, reject) => {
-      const tx = this.db.transaction(["highlights"], "readwrite");
-      const store = tx.objectStore("highlights");
-      const request = store.delete(highlightId);
-
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async getHighlightsByConversation(conversationId) {
-    return new Promise((resolve, reject) => {
-      const tx = this.db.transaction(["highlights"], "readonly");
-      const store = tx.objectStore("highlights");
-      const index = store.index("conversationId");
-      const request = index.getAll(conversationId);
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async getAllHighlights() {
-    return new Promise((resolve, reject) => {
-      const tx = this.db.transaction(["highlights"], "readonly");
-      const store = tx.objectStore("highlights");
-      const request = store.getAll();
-
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
   // 清空所有数据
   async clearAll() {
-    const stores = ["conversations", "favorites", "highlights"];
+    const stores = ["conversations", "favorites"];
     const promises = stores.map((storeName) => {
       return new Promise((resolve, reject) => {
         const tx = this.db.transaction([storeName], "readwrite");
@@ -261,12 +191,9 @@ class ChatDatabase {
   async getStats() {
     const conversations = await this.getAllConversations();
     const favorites = await this.getFavorites();
-    const highlights = await this.getAllHighlights();
-
     return {
       conversationsCount: conversations.length,
       favoritesCount: favorites.length,
-      highlightsCount: highlights.length,
     };
   }
 }

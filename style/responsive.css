@@ -1,9 +1,9 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
-  /* 基础布局调整 */
+
   .container {
-    padding-left: 15px; /* 减小页边距 */
-    padding-right: 15px; /* 减小页边距 */
+    padding-left: 15px;
+    padding-right: 15px;
   }
 
   header h1 {
@@ -15,7 +15,7 @@
   }
 
   header .theme-toggle {
-    top: 25px;
+    top: 15px;
     right: 15px;
   }
 
@@ -26,7 +26,7 @@
   }
 
   .back-btn {
-    top: 25px;
+    top: 15px;
   }
 
   .card {
@@ -41,8 +41,11 @@
     font-size: 1.4rem;
   }
 
-  /* 仪表板从两列变为一列 */
   .dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .like-container {
     grid-template-columns: minmax(0, 1fr);
   }
 

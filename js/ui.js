@@ -1,7 +1,6 @@
 // UI 渲染和交互管理
 import chatDB from "./db.js";
-import { favoritesManager, highlightsManager } from "./favorites.js";
-import { aggregateDailyMessageCounts } from "./parser.js";
+import { favoritesManager } from "./favorites.js";
 
 // 配置marked.js
 if (typeof marked !== "undefined") {
@@ -33,7 +32,7 @@ function renderMarkdown(text) {
   return escapeHtml(text);
 }
 
-function formatDate(timestamp) {
+export function formatDate(timestamp) {
   if (!timestamp) return "未知时间";
   const date = new Date(timestamp * 1000);
   return date.toLocaleString("zh-CN", {
@@ -164,13 +163,6 @@ class UIManager {
         <div class="message-time">
           ${formatDate(msg.createTime)}
         </div>
-        <div class="message-actions">
-          <button class="highlight-icon" onclick="uiManager.highlightMessage('${
-            msg.id
-          }')" title="高亮">
-            ✎
-          </button>
-        </div>
       </div>
     `;
   }
@@ -279,63 +271,6 @@ class UIManager {
 
     // 刷新收藏列表
     await this.renderFavoritesList();
-  }
-
-  async renderHighlightsList() {
-    const container = document.getElementById("highlightsList");
-    const highlights = highlightsManager.getAllHighlights();
-
-    // 更新高亮统计数
-    if (highlights.length === 0) {
-      document.getElementById("highlightsCount").textContent = 0;
-      container.innerHTML = '<div class="empty-state"><p>暂无高亮</p></div>';
-      return;
-    }
-
-    const html = highlights
-      .map((hl) => {
-        // 查找对应的对话标题
-        const conv = this.allConversations.find(
-          (c) => (c.id || c.title) === hl.conversationId
-        );
-        const conversationTitle = conv?.title || "未命名对话";
-        return `
-      <div class="highlight-item ${
-        hl.color
-      }" onclick="uiManager.selectConversation('${hl.conversationId}')">
-        <div class="highlight-text">${escapeHtml(hl.text)}</div>
-        <div class="highlight-title">${escapeHtml(
-          conversationTitle
-        )}</div>
-      </div>
-    `;
-      })
-      .join("");
-
-    container.innerHTML = html;
-    document.getElementById("highlightsCount").textContent = highlights.length;
-  }
-
-  async highlightMessage(messageId) {
-
-    const colors = ["yellow", "blue", "green"];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-
-    const selection = window.getSelection();
-    const text = selection.toString().trim();
-
-    if (text) {
-      await highlightsManager.addHighlight(
-        this.currentConversation.id || this.currentConversation.title,
-        messageId,
-        text,
-        color
-      );
-      console.log("已添加高亮");
-      await this.renderHighlightsList();
-    } else {
-      console.log("请先选择要高亮的文本");
-    }
   }
 
   // 筛选对话
