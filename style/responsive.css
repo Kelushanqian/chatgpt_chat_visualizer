@@ -15,8 +15,8 @@
   }
 
   header .theme-toggle {
-    top: 50px;
-    right: 10px;
+    top: 25px;
+    right: 15px;
   }
 
   .theme-toggle .theme-btn,
@@ -26,7 +26,7 @@
   }
 
   .back-btn {
-    top: 45px;
+    top: 25px;
   }
 
   .card {
@@ -60,16 +60,19 @@
     max-height: 700px;
   }
 
-  .conversations-list,
-  .messages-list {
-    border: 2px solid var(--border-primary);
-  }
-
   .conversation-item {
     border-radius: 0;
     margin-bottom: 0;
-    border-width: 1px;
-    border-right-width: 2px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+  }
+
+  .conversation-item:first-child {
+    border-top-width: 2px;
+  }
+
+  .conversation-item:last-child {
+    border-bottom-width: 2px;
   }
 
   .conversation-title {

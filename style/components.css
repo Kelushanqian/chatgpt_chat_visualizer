@@ -1,6 +1,6 @@
 /* 标题 */
 header {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   position: relative;
 }
 
@@ -10,9 +10,8 @@ header .title-section {
 
 header .theme-toggle {
   position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 100;
+  top: 35px;
+  right: 35px;
 }
 
 header h1 {
@@ -36,12 +35,13 @@ header p {
   height: 40px;
   border-radius: 20px;
   cursor: pointer;
-  color: #c0b0c0;
+  color: var(--text-muted);
+  z-index: 100;
 }
 
 .back-btn {
   position: absolute;
-  top: 25px;
+  top: 35px;
 }
 
 .theme-toggle .theme-btn:hover,
@@ -145,8 +145,6 @@ header p {
   text-align: center;
 }
 
-
-
 .stat-item {
   text-align: center;
   padding: 10px 5px;
@@ -215,10 +213,13 @@ header p {
 .search-box:focus,
 .filter-select:focus {
   outline: none;
+  border-color: var(--border-active);
   box-shadow: var(--shadow-focus);
 }
 
-
+.search-box::placeholder {
+  color: var(--text-primary);
+}
 
 .conversations-list,
 .messages-list {
@@ -336,7 +337,7 @@ header p {
 
 .message-content code {
   background: var(--bg-card);
-  padding: 0 5px;
+  padding: 0 3px;
   font-family: "Consolas", monospace;
   font-size: 0.85rem;
   border: 1px solid var(--border-primary);
@@ -449,4 +450,3 @@ header p {
   opacity: 0;
   z-index: 100;
 }
-

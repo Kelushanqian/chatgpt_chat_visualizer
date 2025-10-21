@@ -71,10 +71,10 @@ function mergeConsecutiveMessages(messages) {
       currentMergedMsg.content +=
         (currentMergedMsg.content ? "\n" : "") + newContent;
       // 始终取最新的更新时间
-      const nextUpdateTime = nextMsg.updateTime || nextMsg.createTime || 0;
-      const currentUpdateTime =
-        currentMergedMsg.updateTime || currentMergedMsg.createTime || 0;
-      currentMergedMsg.updateTime = Math.max(currentUpdateTime, nextUpdateTime);
+      const nextCreateTime = nextMsg.createTime || 0;
+      const currentCreateTime =
+        currentMergedMsg.createTime || 0;
+      currentMergedMsg.createTime = Math.max(currentCreateTime, nextCreateTime);
     } else {
       mergedMessages.push(currentMergedMsg);
       currentMergedMsg = { ...nextMsg };
@@ -132,7 +132,6 @@ function processMessage(node) {
     role: role,
     content: content,
     createTime: msg.create_time || 0,
-    updateTime: msg.update_time || 0,
   };
 }
 
@@ -151,7 +150,7 @@ function processConversationsData(data) {
         conv.assistantMessageCount = messages.filter(
           (m) => m.role === "assistant"
         ).length;
-        conv.lastUpdate = conv.update_time || conv.create_time || 0;
+        conv.lastCreate = conv.create_time || 0;
       } catch (error) {
         console.error(`处理对话 ${index} 时出错:`, error);
         conv.messages = [];
@@ -283,13 +282,11 @@ function updateStatistics() {
 function renderConversationList() {
   const container = document.getElementById("conversationList");
 
-  if (filteredConversations.length === 0) {
-    container.innerHTML =
-      '<div class="empty-state"><p>没有找到匹配的对话</p></div>';
-    return;
-  }
+  const conversationsList = filteredConversations.sort(
+        (a, b) => (b.create_time || 0) - (a.create_time || 0)
+      );
 
-  const html = filteredConversations
+  const html = conversationsList
     .map(
       (conv) => `
       <div class="conversation-item" onclick="selectConversation('${
@@ -371,6 +368,7 @@ function renderDailyTrendChart(dailyData) {
     const heightPercent = (item.count / maxCount) * 100;
     bar.className = "chart-bar";
     bar.style.height = `${heightPercent}%`;
+    bar.title = `${item.date}: ${item.count} 条`;
     bar.style.flex = "1 1 0";
 
     bar.addEventListener("click", () => {
@@ -440,7 +438,6 @@ function exportConversation() {
   const exportData = {
     title: currentConversation.title,
     create_time: currentConversation.create_time,
-    update_time: currentConversation.update_time,
     messages: currentConversation.messages,
     message_count: currentConversation.messageCount,
   };
