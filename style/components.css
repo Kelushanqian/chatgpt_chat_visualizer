@@ -191,6 +191,46 @@ header p {
   text-align: center;
 }
 
+.favorites-container .empty-state,
+.highlights-container .empty-state {
+  text-align: left;
+}
+
+.favorites-list,
+.highlights-list {
+  max-height: 390px;
+  overflow-y: auto;
+  border-top: solid 2px var(--border-primary);
+}
+
+.favorite-item,
+.highlight-item {
+  margin-bottom: 5px;
+}
+
+.favorite-item .favorite-title,
+.highlight-item .highlight-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.highlight-item .highlight-title {
+  text-align: end;
+}
+
+.favorite-item .favorite-time,
+.highlight-item .highlight-title {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.favorite-title:hover,
+.highlight-title:hover {
+  color: var(--text-em);
+  cursor: pointer;
+}
+
 /* 对话标题搜索和排序 */
 .controls {
   display: flex;
@@ -230,12 +270,15 @@ header p {
 }
 
 .conversation-item {
-  padding: 7px 0 5px 9px;
+  padding: 5px;
   margin-bottom: 10px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .conversation-item:hover {
@@ -304,6 +347,19 @@ header p {
   font-size: 0.75rem;
   opacity: 0.6;
   color: var(--text-muted);
+}
+
+.conversation-item .favorite-btn {
+  border-style: none;
+  border-radius: 5px;
+  background-color: transparent;
+  font-size: 1.6rem;
+  color: var(--border-primary);
+  z-index: 100;
+}
+
+.conversation-item .favorite-btn:hover {
+  color: var(--border-hover);
 }
 
 /* Markdown 样式 */

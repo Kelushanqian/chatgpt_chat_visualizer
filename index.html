@@ -65,7 +65,8 @@
         </div>
 
         <div id="dashboard" class="hidden dashboard">
-          <div class="card stats-and-chart">
+          <!-- 左侧上：数据总览 -->
+          <div class="card">
             <h2>数据总览</h2>
             <div class="stats-grid">
               <div class="stat-item">
@@ -94,7 +95,34 @@
               导出所有数据
             </button>
           </div>
-          <div class="card"></div>
+
+          <!-- 右侧上：收藏夹 -->
+          <div class="card">
+            <h2>我的收藏</h2>
+            <div class="stats-grid">
+              <div class="favorites-container">
+                <span class="stat-label">收藏数</span>
+                <span class="stat-number" id="favoritesCount">0</span>
+
+                <div id="favoritesList" class="favorites-list">
+                  <div class="empty-state">
+                    <p>还没有收藏任何对话</p>
+                  </div>
+                </div>
+              </div>
+              <div class="highlights-container">
+                <span class="stat-label">高亮数</span>
+                <span class="stat-number" id="highlightsCount">0</span>
+                <div id="highlightsList" class="highlights-list">
+                  <div class="empty-state">
+                    <p>还没有收藏任何对话</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 左侧下：对话列表 -->
           <div class="card list-container">
             <h2>对话列表</h2>
             <div class="controls">
@@ -112,6 +140,8 @@
             </div>
             <div id="conversationList" class="conversations-list"></div>
           </div>
+
+          <!-- 右侧下：对话详情 -->
           <div class="card messages-container">
             <h2 id="conversationTitle">选择一个对话查看详情</h2>
 
@@ -135,6 +165,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="./js/chat.js"></script>
+    <!-- <script src="./js/chat.js"></script> -->
+    <script type="module" src="./js/main.js"></script>
   </body>
 </html>

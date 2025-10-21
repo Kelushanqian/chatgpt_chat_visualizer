@@ -41,6 +41,11 @@
   /* 滚动条 */
   --scrollbar-track: transparent;
   --scrollbar-thumb: rgba(139, 112, 136, 0.3);
+
+  /* 高亮 */
+  --color-highlight-1: rgba(255, 235, 153, 0.5);
+  --color-highlight-2: rgba(179, 229, 252, 0.5);
+  --color-highlight-3: rgba(206, 237, 199, 0.5);
 }
 
 /* 深色主题变量 */
@@ -86,4 +91,9 @@
   /* 滚动条 */
   --scrollbar-track: transparent;
   --scrollbar-thumb: rgba(168, 133, 199, 0.4);
+
+  /* 高亮 */
+  --color-highlight-1: rgba(255, 235, 153, 0.3);
+  --color-highlight-2: rgba(179, 229, 252, 0.3);
+  --color-highlight-3: rgba(206, 237, 199, 0.3);
 }
