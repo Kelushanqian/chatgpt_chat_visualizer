@@ -224,6 +224,7 @@ header p {
 .something-content {
   font-size: 0.9rem;
   color: var(--text-muted);
+  word-break: break-all;
 }
 
 .favorite-item {
