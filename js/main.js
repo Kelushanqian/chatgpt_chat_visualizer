@@ -168,7 +168,7 @@ async function exportAllData() {
 
 // 生成单个对话的 Markdown
 function generateConversationMarkdown(conversation) {
-  let markdown = `# ${conversation.title || "未命名对话"}\n\n`;
+  let markdown = `> ${conversation.title || "未命名对话"}\n\n`;
   markdown += `create_time: ${formatDate(conversation.create_time)}\n\n`;
   markdown += `messages_count: ${conversation.messageCount}\n\n`;
 
@@ -183,6 +183,20 @@ function generateConversationMarkdown(conversation) {
   return markdown;
 }
 
+// 导出收藏对话的 Markdown
+async function exportFavorites() {
+  const favorites = await favoritesManager.getAllFavorites();
+  if (favorites.length === 0) {
+    return;
+  }
+  const conversations = await Promise.all(
+    favorites.map((fav) => chatDB.getConversation(fav.conversationId))
+  );
+  const validConversations = conversations.filter((conv) => conv !== null);
+  const markdown = generateAllConversationsMarkdown(validConversations);
+  downloadMarkdown(markdown, "收藏的对话.md");
+}
+
 // 生成所有对话的 Markdown
 function generateAllConversationsMarkdown(conversations) {
   let markdown = "";
@@ -191,7 +205,7 @@ function generateAllConversationsMarkdown(conversations) {
   markdown += `---\n\n`;
 
   conversations.forEach((conv) => {
-    markdown += `# ${conv.title || "未命名对话"}\n\n`;
+    markdown += `> ${conv.title || "未命名对话"}\n\n`;
     markdown += `create_time: ${formatDate(conv.create_time)}\n\n`;
     markdown += `messages_count: ${conv.messageCount}\n\n`;
     conv.messages.forEach((msg) => {
@@ -277,6 +291,7 @@ async function clearDatabase() {
 window.backToUpload = backToUpload;
 window.exportConversation = exportConversation;
 window.exportAllData = exportAllData;
+window.exportFavorites = exportFavorites;
 window.clearDatabase = clearDatabase;
 
 // 启动应用

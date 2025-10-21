@@ -103,13 +103,54 @@
                 <span class="like-label">(๑˘͈ ᵕ ˘͈ )｡･:*♡</span>
                 <span class="like-label">说明书</span>
                 <div class="something-content">
-                  <p>欢迎来到这个小网页，请食用使用说明。</p>
+                  <em>欢迎来到这个网页，</em><br />
+                  <em>这是一个 ChatGPT 导出数据的可视化小工具。</em><br />
+                  <em>下面是说明，请安心食用~</em>
+                  <p>
+                    <strong>按钮说明</strong><br />
+                    - 左上角 < 是返回重新上传文件，会同时清除本地浏览器在
+                    indexedDB 存储的 conversations.json 所有数据。<br />
+                    - 右上角 :D 可切换亮色与暗色模式。
+                  </p>
+                  <p>
+                    <strong>数据总览</strong><br />
+                    - 消息是根据 current_node
+                    进行分析回溯的，不会收录重新编辑或生成的消息。<br />
+                    - 并将 " Model set context updated. " 等系统消息合并入 Agent
+                    消息。<br />
+                    - 所以双方的消息数是相同的。<br />
+                    - conversations.json 数据是用 indexedDB 存在本地浏览器里的，
+                    点击返回按钮 < 自动清除，安全可靠的哈。<br />
+
+                    <strong>趋势图表</strong><br />
+                    - 显示最近有对话的 20
+                    天的消息数量变化，没有对话的日期会直接跳过。<br />
+                    - 点击趋势图的柱形，会显示日期和当天消息数哦。
+                  </p>
+                  <p>
+                    <strong>收藏功能</strong><br />
+                    - 点击对话列表右侧的圆形即可收藏对话。<br />
+                    - 由于重新上传文件时 indexedDB
+                    就会清空，所以单独的收藏功能及其没用，
+                    于是做成可以多选对话导出。
+                  </p>
+                  <p>
+                    <strong>搜索排序</strong><br />
+                    - 搜索框目前只支持根据标题找对话。<br />
+                    - 可按时间、消息数或标题首字排序。
+                  </p>
+                  <p>
+                    <strong>导出数据</strong><br />
+                    - 导出的数据是干净的 MarkDown 格式，很方便看。
+                  </p>
                 </div>
               </div>
               <div class="favorites-container">
                 <span class="like-label">收藏数</span>
                 <span class="like-label" id="favoritesCount"></span>
-
+                <button class="btn-secondary like-btn" onclick="exportFavorites()">
+                  导出收藏对话
+                </button>
                 <div id="favoritesList" class="favorites-list">
                   <div class="empty-state">
                     <p>还没有收藏任何对话</p>

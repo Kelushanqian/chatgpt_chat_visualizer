@@ -108,6 +108,13 @@ header p {
   box-shadow: var(--shadow-hover);
 }
 
+.like-btn {
+  border-style: none;
+  padding: 3px;
+  border-radius: 5px;
+  float: right;
+}
+
 /* 加载状态 */
 .loading {
   margin-top: 10px;
@@ -191,6 +198,10 @@ header p {
   text-align: center;
 }
 
+.like-container {
+  margin-bottom: 0;
+}
+
 .like-label {
   opacity: 0.8;
   font-family: sans-serif;
@@ -202,9 +213,17 @@ header p {
 
 .favorites-list,
 .something-content {
-  max-height: 390px;
+  max-height: 450px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   border-top: solid 2px var(--border-primary);
+  border-bottom: solid 2px var(--border-primary);
+}
+
+.something-content {
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 .favorite-item {
@@ -437,6 +456,8 @@ header p {
   border-collapse: collapse;
   display: block;
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 .message-content table code {
