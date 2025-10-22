@@ -67,34 +67,28 @@ class UIManager {
   renderConversationList(conversations) {
     const container = document.getElementById("conversationList");
 
-    const conversationsList = conversations.sort(
-      (a, b) => (b.create_time || 0) - (a.create_time || 0)
-    );
-
-    const html = conversationsList
+    const html = conversations
       .map((conv) => {
-        const isFav = favoritesManager.isFavorite(conv.id || conv.title);
+        const isFav = favoritesManager.isFavorite(conv.id);
         const favClass = isFav ? "active" : "";
 
         return `
         <div 
           class="conversation-item" 
-          onclick="uiManager.selectConversation('${
-            conv.id || conv.title
-          }', event)" 
-          data-id="${conv.id || conv.title}">
+          onclick="uiManager.selectConversation('${conv.id}', event)" 
+          data-id="${conv.id}">
           <div class="conversation-info">
             <div class="conversation-title">
               ${escapeHtml(conv.title || "未命名对话")}
             </div>
             <div class="conversation-meta">
-              ${conv.messageCount} 条消息 | ${formatDate(conv.create_time)}
+              ${conv.messageCount} 条消息 | 创建于 ${formatDate(conv.create_time)}
             </div>
           </div>
 
             <button class="favorite-btn ${favClass}" 
                     onclick="uiManager.toggleFavorite('${
-                      conv.id || conv.title
+                      conv.id
                     }', event)"
                     title="${isFav ? "取消收藏" : "收藏"}">
               ${isFav ? "●" : "○"}
@@ -282,9 +276,14 @@ class UIManager {
 
     // 排序
     switch (sortBy) {
-      case "time":
+      case "update":
         this.filteredConversations.sort(
           (a, b) => (b.create_time || 0) - (a.create_time || 0)
+        );
+        break;
+      case "create":
+        this.filteredConversations.sort(
+          (a, b) => (a.create_time || 0) - (b.create_time || 0)
         );
         break;
       case "messages":

@@ -65,24 +65,14 @@ class ChatDatabase {
   }
 
   // 获取所有对话（可选择是否加载消息）
-  async getAllConversations(includeMessages = false) {
+  async getAllConversations() {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(["conversations"], "readonly");
       const store = tx.objectStore("conversations");
       const request = store.getAll();
 
       request.onsuccess = () => {
-        if (includeMessages) {
-          // 返回完整数据
           resolve(request.result);
-        } else {
-          // 返回不含完整消息的轻量数据
-          const conversations = request.result.map((conv) => ({
-            ...conv,
-            messages: [], // 暂不加载消息
-          }));
-          resolve(conversations);
-        }
       };
       request.onerror = () => reject(request.error);
     });

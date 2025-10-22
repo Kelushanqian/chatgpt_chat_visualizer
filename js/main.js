@@ -18,7 +18,6 @@ async function initApp() {
 
     // 初始化收藏管理器
     await favoritesManager.init();
-    console.log("收藏数据加载成功");
 
     // 设置事件监听
     setupFileHandling();
@@ -34,29 +33,21 @@ async function initApp() {
       uiManager.showEmptyState();
     }
   } catch (error) {
-    console.error("应用初始化失败:", error);
+    console.error("应用初始化失败，请尝试清除网页缓存");
     uiManager.showEmptyState();
   }
 }
 
 // 从数据库加载数据
 async function loadDataFromDB(conversations) {
+  conversations.sort((a, b) => (b.create_time || 0) - (a.create_time || 0));
   uiManager.allConversations = conversations;
-  uiManager.filteredConversations = [...conversations];
 
   const stats = calculateStatistics(conversations);
   uiManager.updateStatistics(stats);
-  uiManager.renderConversationList(uiManager.filteredConversations);
+  uiManager.renderConversationList(uiManager.allConversations);
 
-  // 为了生成趋势图，需要从数据库加载完整的消息数据
-  const conversationsWithMessages = await Promise.all(
-    conversations.slice(0, 50).map(async (conv) => {
-      const fullConv = await chatDB.getConversation(conv.id || conv.title);
-      return fullConv || conv;
-    })
-  );
-
-  const dailyCounts = aggregateDailyMessageCounts(conversationsWithMessages);
+  const dailyCounts = aggregateDailyMessageCounts(conversations);
   uiManager.renderDailyTrendChart(dailyCounts);
   await uiManager.renderFavoritesList();
   uiManager.showDashboard();
@@ -122,7 +113,7 @@ async function handleFile(file) {
   reader.readAsText(file);
 }
 
-// 搜索和排序
+// 搜索
 function setupSearch() {
   const searchBox = document.getElementById("searchBox");
   const sortSelect = document.getElementById("sortSelect");

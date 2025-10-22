@@ -36,8 +36,7 @@ function mergeConsecutiveMessages(messages) {
         (currentMergedMsg.content ? "\n" : "") + newContent;
       // 始终取最新的更新时间
       const nextCreateTime = nextMsg.createTime || 0;
-      const currentCreateTime =
-        currentMergedMsg.createTime || 0;
+      const currentCreateTime = currentMergedMsg.createTime || 0;
       currentMergedMsg.createTime = Math.max(currentCreateTime, nextCreateTime);
     } else {
       mergedMessages.push(currentMergedMsg);
@@ -107,14 +106,14 @@ function processConversationsData(data) {
 
   conversationsData.forEach((conv, index) => {
     try {
-      const messages = extractMessages(conv);
-      conv.messages = messages;
-      conv.messageCount = messages.length;
-      conv.userMessageCount = messages.filter((m) => m.role === "user").length;
-      conv.assistantMessageCount = messages.filter(
-        (m) => m.role === "assistant"
-      ).length;
-      conv.lastCreate = conv.create_time || 0;
+    const messages = extractMessages(conv);
+    conv.messages = messages;
+    conv.messageCount = messages.length;
+    conv.userMessageCount = messages.filter((m) => m.role === "user").length;
+    conv.assistantMessageCount = messages.filter(
+      (m) => m.role === "assistant"
+    ).length;
+    conv.lastCreate = conv.create_time || 0;
     } catch (error) {
       console.error(`处理对话 ${index} 时出错:`, error);
       conv.messages = [];
@@ -132,20 +131,21 @@ function aggregateDailyMessageCounts(conversations) {
   const dailyCounts = {};
 
   conversations.forEach((conv) => {
-    const messages = conv.messages || extractMessages(conv);
-
-    messages.forEach((msg) => {
-      if (msg.createTime) {
-        const date = new Date(msg.createTime * 1000);
-        const dateKey = date.toISOString().split("T")[0];
-        dailyCounts[dateKey] = (dailyCounts[dateKey] || 0) + 1;
-      }
+    conv.messages?.forEach((msg) => {
+      if (!msg.createTime) return; // 防御性编程)
+      const date = new Date(msg.createTime * 1000);
+      // 使用本地时区格式化日期
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const dateKey = `${year}-${month}-${day}`;
+      dailyCounts[dateKey] = (dailyCounts[dateKey] || 0) + 1;
     });
   });
 
   // 返回按日期排序的数组
   const sortedData = Object.entries(dailyCounts)
-    .sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB))
+    .sort(([a], [b]) => a.localeCompare(b))
     .map(([date, count]) => ({ date, count }));
 
   return sortedData;
