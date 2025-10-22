@@ -109,8 +109,7 @@
 
                   <p>
                     <strong>按钮说明</strong><br />
-                    - 左上角「<」用于返回并重新上传文件，会同时清除本地浏览器
-                    indexedDB 中存储的 conversations.json 数据。<br />
+                    - 左上角「<」用于返回并重新上传文件，会同时清除本地浏览器 indexedDB 中存储的 conversations.json 数据，包括收藏记录。<br />
                     - 右上角「:D」可切换亮色与暗色模式。
                   </p>
 
@@ -118,12 +117,7 @@
                     <strong>数据总览</strong><br />
                     - 消息是根据 current_node
                     回溯分析的，不包含重新编辑或生成的记录。<br />
-                    - 系统消息（如 "Model set context updated."）会自动合并入
-                    Agent 消息中。<br />
-                    - 因此双方消息数是相同的。<br />
-                    - 数据存储在本地浏览器的 indexedDB
-                    中，点击返回按钮「<」会自动清除。<br />
-                    - 所有内容均保存在本地浏览器，安全可靠。
+                    - 系统消息（如 "Model set context updated."）会自动合并入 Agent 消息中，因此双方消息数是相同的。<br />
                   </p>
 
                   <p>
@@ -136,8 +130,7 @@
                   <p>
                     <strong>收藏功能</strong><br />
                     - 点击对话列表右侧的圆形图标即可收藏。<br />
-                    - 重新上传文件会清空 indexedDB，收藏不会长期保存。<br />
-                    - 因此可多选对话后一起导出，方便保留。
+                    - 重新上传文件会清空 indexedDB，收藏不会长期保存。因此可多选对话后一起导出 Markdown 文件，方便查看和保留。
                   </p>
 
                   <p>
@@ -147,8 +140,13 @@
                   </p>
 
                   <p>
-                    <strong>导出数据</strong><br />
-                    - 导出的内容为干净的 Markdown 格式，便于阅读与备份。
+                    <strong>其他说明</strong><br />
+                    - 所有导出皆为 Markdown 格式，便于阅读与备份。<br />
+                    - 若未点击返回「<」便退出网页，下次会自动从本地浏览器的 indexedDB
+                    加载你上次上传的 conversations.json 数据。<br />
+                    - 数据存储在本地浏览器的 indexedDB
+                    中，点击返回按钮「<」会自动清除。<br />
+                    - 所有内容均离线保存在本地浏览器，安全可靠。
                   </p>
                 </div>
               </div>

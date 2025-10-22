@@ -159,7 +159,7 @@ async function exportAllData() {
 
 // 生成单个对话的 Markdown
 function generateConversationMarkdown(conversation) {
-  let markdown = `> ${conversation.title || "未命名对话"}\n\n`;
+  let markdown = `# ${conversation.title || "未命名对话"}\n\n`;
   markdown += `create_time: ${formatDate(conversation.create_time)}\n\n`;
   markdown += `messages_count: ${conversation.messageCount}\n\n`;
 
@@ -196,7 +196,7 @@ function generateAllConversationsMarkdown(conversations) {
   markdown += `---\n\n`;
 
   conversations.forEach((conv) => {
-    markdown += `> ${conv.title || "未命名对话"}\n\n`;
+    markdown += `# ${conv.title || "未命名对话"}\n\n`;
     markdown += `create_time: ${formatDate(conv.create_time)}\n\n`;
     markdown += `messages_count: ${conv.messageCount}\n\n`;
     conv.messages.forEach((msg) => {
