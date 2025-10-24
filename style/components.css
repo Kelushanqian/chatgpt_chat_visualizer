@@ -223,7 +223,9 @@ header p {
 }
 
 .favorites-list {
-  max-height: 410px;
+  max-height: 394px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--border-primary);
 }
 
 .something-content {
@@ -231,10 +233,6 @@ header p {
   color: var(--text-muted);
   word-break: break-all;
   max-height: 450px;
-}
-
-.favorite-item {
-  margin-bottom: 5px;
 }
 
 .favorite-item .favorite-title {
