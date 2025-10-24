@@ -40,8 +40,7 @@ body {
 
 .chart-container {
   height: 150px;
-  padding: 5px;
-  border-radius: var(--border-radius);
+  padding: 5px 15px;
   margin-bottom: 10px;
 }
 

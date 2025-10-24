@@ -108,13 +108,6 @@ header p {
   box-shadow: var(--shadow-hover);
 }
 
-.like-btn {
-  border-style: none;
-  padding: 3px;
-  border-radius: 5px;
-  float: right;
-}
-
 /* 加载状态 */
 .loading {
   margin-top: 10px;
@@ -148,6 +141,7 @@ header p {
 }
 
 .card h2 {
+  font-size: 1.4rem;
   color: var(--text-primary);
   text-align: center;
 }
@@ -207,24 +201,36 @@ header p {
   font-family: sans-serif;
 }
 
-.favorites-container .empty-state {
-  text-align: left;
+.something-container {
+  padding-right: 25px;
+  border-right: 2px solid var(--border-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.favorites-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .favorites-list,
 .something-content {
-  max-height: 450px;
+  flex: 1;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   border-top: solid 2px var(--border-primary);
-  border-bottom: solid 2px var(--border-primary);
+}
+
+.favorites-list {
+  max-height: 410px;
 }
 
 .something-content {
   font-size: 0.9rem;
   color: var(--text-muted);
   word-break: break-all;
+  max-height: 450px;
 }
 
 .favorite-item {
@@ -326,7 +332,8 @@ header p {
   padding: 10px 12px;
   border-radius: 15px;
   transition: all 0.3s ease;
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   font-size: 0.9rem;
 }
 

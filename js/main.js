@@ -276,6 +276,7 @@ function loadTheme() {
 async function clearDatabase() {
   await chatDB.clearAll();
   await favoritesManager.init();
+  console.log("数据库已清除");
 }
 
 // 全局导出供HTML调用

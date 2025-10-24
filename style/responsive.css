@@ -45,8 +45,19 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .something-container {
+    border-style: none;
+    padding-right: 0;
+  }
+
   .like-container {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .favorites-container {
+    border-top: 2px solid var(--border-primary);
+    margin-top: 10px;
+    padding-top: 3px;
   }
 
   .search-box,

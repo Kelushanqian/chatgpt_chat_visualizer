@@ -65,105 +65,107 @@
         </div>
 
         <div id="dashboard" class="hidden dashboard">
-          <!-- 左侧上：数据总览 -->
           <div class="card">
-            <h2>数据总览</h2>
-            <div class="stats-grid">
-              <div class="stat-item">
-                <div class="stat-number" id="totalConversations">0</div>
-                <div class="stat-label">对话总数</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number" id="totalMessages">0</div>
-                <div class="stat-label">消息总数</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number" id="userMessages">0</div>
-                <div class="stat-label">用户消息</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-number" id="assistantMessages">0</div>
-                <div class="stat-label">助手消息</div>
-              </div>
-            </div>
-            <div class="daily-chart">
-              <h2>对话数趋势图</h2>
-              <div id="dailyTrendChart" class="chart-container"></div>
-            </div>
+            <span class="like-label">(๑˘͈ ᵕ ˘͈ )｡･:*♡ 说明书</span>
+            <div class="something-content">
+              <em>欢迎来到这个网页，</em><br />
+              <em>这是一个 ChatGPT 导出数据的可视化小工具。</em><br />
+              <em>下面是简要说明，请安心食用~</em>
 
-            <button class="btn btn-secondary" onclick="exportAllData()">
-              导出所有数据
-            </button>
+              <p>
+                <strong>按钮说明</strong><br />
+                - 左上角「<」用于返回并重新上传文件，会同时清除本地浏览器
+                indexedDB 中存储的 conversations.json 数据，包括收藏记录。<br />
+                - 右上角「:D」可切换亮色与暗色模式。
+              </p>
+
+              <p>
+                <strong>数据总览</strong><br />
+                - 消息是根据 current_node
+                回溯分析的，不包含重新编辑或生成的记录。<br />
+                - 系统消息（如 "Model set context updated."）会自动合并入 Agent
+                消息中，因此双方消息数是相同的。<br />
+              </p>
+
+              <p>
+                <strong>趋势图表</strong><br />
+                - 显示最近有对话的 20 天的消息数量变化。<br />
+                - 无对话的日期将自动跳过。<br />
+                - 点击柱状图可查看具体日期与当天消息数。
+              </p>
+
+              <p>
+                <strong>收藏功能</strong><br />
+                - 点击对话列表右侧的圆形图标即可收藏。<br />
+                - 重新上传文件会清空
+                indexedDB，收藏不会长期保存。因此可多选对话后一起导出 Markdown
+                文件，方便查看和保留。
+              </p>
+
+              <p>
+                <strong>搜索排序</strong><br />
+                - 搜索框目前仅支持根据标题查找。<br />
+                - 支持按时间、消息数或标题首字母排序。
+              </p>
+
+              <p>
+                <strong>其他说明</strong><br />
+                - 所有导出皆为 Markdown 格式，便于阅读与备份。<br />
+                - 若未点击返回「<」便退出网页，下次会自动从本地浏览器的
+                indexedDB 加载你上次上传的 conversations.json 数据。<br />
+                - 数据存储在本地浏览器的 indexedDB
+                中，点击返回按钮「<」会自动清除。<br />
+                - 所有内容均离线保存在本地浏览器，安全可靠。
+              </p>
+            </div>
           </div>
 
-          <!-- 右侧上：收藏夹 -->
           <div class="card">
             <div class="stats-grid like-container">
               <div class="something-container">
-                <span class="like-label">(๑˘͈ ᵕ ˘͈ )｡･:*♡</span>
-                <span class="like-label">说明书</span>
-                <div class="something-content">
-                  <em>欢迎来到这个网页，</em><br />
-                  <em>这是一个 ChatGPT 导出数据的可视化小工具。</em><br />
-                  <em>下面是简要说明，请安心食用~</em>
-
-                  <p>
-                    <strong>按钮说明</strong><br />
-                    - 左上角「<」用于返回并重新上传文件，会同时清除本地浏览器 indexedDB 中存储的 conversations.json 数据，包括收藏记录。<br />
-                    - 右上角「:D」可切换亮色与暗色模式。
-                  </p>
-
-                  <p>
-                    <strong>数据总览</strong><br />
-                    - 消息是根据 current_node
-                    回溯分析的，不包含重新编辑或生成的记录。<br />
-                    - 系统消息（如 "Model set context updated."）会自动合并入 Agent 消息中，因此双方消息数是相同的。<br />
-                  </p>
-
-                  <p>
-                    <strong>趋势图表</strong><br />
-                    - 显示最近有对话的 20 天的消息数量变化。<br />
-                    - 无对话的日期将自动跳过。<br />
-                    - 点击柱状图可查看具体日期与当天消息数。
-                  </p>
-
-                  <p>
-                    <strong>收藏功能</strong><br />
-                    - 点击对话列表右侧的圆形图标即可收藏。<br />
-                    - 重新上传文件会清空 indexedDB，收藏不会长期保存。因此可多选对话后一起导出 Markdown 文件，方便查看和保留。
-                  </p>
-
-                  <p>
-                    <strong>搜索排序</strong><br />
-                    - 搜索框目前仅支持根据标题查找。<br />
-                    - 支持按时间、消息数或标题首字母排序。
-                  </p>
-
-                  <p>
-                    <strong>其他说明</strong><br />
-                    - 所有导出皆为 Markdown 格式，便于阅读与备份。<br />
-                    - 若未点击返回「<」便退出网页，下次会自动从本地浏览器的 indexedDB
-                    加载你上次上传的 conversations.json 数据。<br />
-                    - 数据存储在本地浏览器的 indexedDB
-                    中，点击返回按钮「<」会自动清除。<br />
-                    - 所有内容均离线保存在本地浏览器，安全可靠。
-                  </p>
+                <h2>数据总览</h2>
+                <div class="stats-grid">
+                  <div class="stat-item">
+                    <div class="stat-number" id="totalConversations">0</div>
+                    <div class="stat-label">对话总数</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-number" id="totalMessages">0</div>
+                    <div class="stat-label">消息总数</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-number" id="userMessages">0</div>
+                    <div class="stat-label">用户消息</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-number" id="assistantMessages">0</div>
+                    <div class="stat-label">助手消息</div>
+                  </div>
                 </div>
+
+                <div class="daily-chart">
+                  <h2>对话数趋势图</h2>
+                  <div id="dailyTrendChart" class="chart-container"></div>
+                </div>
+
+                <button class="btn btn-secondary" onclick="exportAllData()">
+                  导出所有数据
+                </button>
               </div>
               <div class="favorites-container">
-                <span class="like-label">收藏数</span>
-                <span class="like-label" id="favoritesCount"></span>
-                <button
-                  class="btn-secondary like-btn"
-                  onclick="exportFavorites()"
-                >
-                  导出收藏对话
-                </button>
+                <div>
+                  <span class="like-label">收藏数</span>
+                  <span class="like-label" id="favoritesCount"></span>
+                </div>
+
                 <div id="favoritesList" class="favorites-list">
                   <div class="empty-state">
                     <p>还没有收藏任何对话</p>
                   </div>
                 </div>
+                <button class="btn btn-secondary" onclick="exportFavorites()">
+                  导出收藏对话
+                </button>
               </div>
             </div>
           </div>
