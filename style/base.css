@@ -40,12 +40,13 @@ body {
 
 .chart-container {
   height: 150px;
-  padding: 5px 15px;
+  padding: 5px 0;
   margin-bottom: 10px;
 }
 
 /* 对话列表 */
 .list-container,
 .messages-container {
-  height: 650px;
+  min-height: 60vh;
+  max-height: 100vh;
 }

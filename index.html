@@ -70,7 +70,7 @@
             <div class="something-content">
               <em>欢迎来到这个网页，</em><br />
               <em>这是一个 ChatGPT 导出数据的可视化小工具。</em><br />
-              <em>下面是简要说明，请安心食用~</em>
+              <em>以下是简要说明，请安心食用~</em>
 
               <p>
                 <strong>按钮说明</strong><br />
@@ -98,13 +98,13 @@
                 <strong>收藏功能</strong><br />
                 - 点击对话列表右侧的圆形图标即可收藏。<br />
                 - 重新上传文件会清空
-                indexedDB，收藏不会长期保存。因此可多选对话后一起导出 Markdown
+                indexedDB，收藏不会长期保存。可多选对话后一起导出 Markdown
                 文件，方便查看和保留。
               </p>
 
               <p>
                 <strong>搜索排序</strong><br />
-                - 搜索框目前仅支持根据标题查找。<br />
+                - 搜索框支持根据标题或内容查找。<br />
                 - 支持按时间、消息数或标题首字母排序。
               </p>
 
@@ -115,7 +115,7 @@
                 indexedDB 加载你上次上传的 conversations.json 数据。<br />
                 - 数据存储在本地浏览器的 indexedDB
                 中，点击返回按钮「<」会自动清除。<br />
-                - 所有内容均离线保存在本地浏览器，安全可靠。
+                - 所有内容均离线保存在本地浏览器的 indexedDB，安全可靠。
               </p>
             </div>
           </div>
@@ -149,7 +149,7 @@
                 </div>
 
                 <button class="btn btn-secondary" onclick="exportAllData()">
-                  导出所有数据
+                  导出所有对话
                 </button>
               </div>
               <div class="favorites-container">
@@ -178,13 +178,15 @@
                 type="text"
                 id="searchBox"
                 class="search-box"
-                placeholder="搜索对话标题"
+                placeholder="搜索标题"
+                autocomplete="off"
               />
               <input
                 type="text"
                 id="searchContentBox"
                 class="search-box"
-                placeholder="搜索对话内容"
+                placeholder="搜索内容"
+                autocomplete="off"
               />
               <select id="sortSelect" class="filter-select">
                 <option value="update">时间由近及远</option>

@@ -1,5 +1,12 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
+  .upload-area {
+    padding: 20px 0;
+  }
+
+  .card#uploadSection {
+    padding: 15px;
+  }
 
   .container {
     padding-left: 15px;
@@ -7,7 +14,7 @@
   }
 
   header h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   header p {
@@ -56,22 +63,43 @@
 
   .favorites-container {
     border-top: 2px solid var(--border-primary);
-    margin-top: 10px;
     padding-top: 3px;
+  }
+
+  .conversation-item .favorite-btn {
+    font-size: 1.4rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .controls :nth-child(2) {
+    border-top-style: none;
+    border-bottom-style: none;
   }
 
   .search-box,
   .filter-select {
+    padding: 8px;
     width: 100%;
+    border-radius: 0;
+    font-size: 0.9rem;
   }
 
   .conversation-header {
     display: none;
   }
 
-  .list-container,
+  .list-container {
+    min-height: 50vh;
+    max-height: 60vh;
+  }
+
   .messages-container {
-    max-height: 700px;
+    min-height: 0;
+    max-height: 100vh;
   }
 
   .conversation-item {

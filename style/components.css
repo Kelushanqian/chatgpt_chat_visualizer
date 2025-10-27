@@ -136,7 +136,7 @@ header p {
 }
 
 .dashboard .card {
-  padding-top: 5px;
+  padding-top: 10px;
   padding-bottom: 15px;
 }
 
@@ -254,20 +254,23 @@ header p {
 /* 对话标题搜索和排序 */
 .controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .search-box,
 .filter-select {
   background-color: var(--bg-card);
-  padding: 10px 12px;
-  width: 150px;
+  padding: 10px 5px;
+  width: 100%;
   border: 2px solid var(--border-primary);
   border-radius: 12px;
   font-size: 0.9rem;
   color: var(--text-primary);
   transition: all 0.3s ease;
+}
+
+.search-box {
+  width: 65%;
 }
 
 .search-box:focus,
@@ -292,7 +295,7 @@ header p {
 .conversation-item {
   padding: 5px;
   margin-bottom: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid var(--border-primary);
@@ -313,13 +316,13 @@ header p {
 }
 
 .conversation-title {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
 }
 
 .conversation-meta {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   opacity: 0.7;
   color: var(--text-secondary);
