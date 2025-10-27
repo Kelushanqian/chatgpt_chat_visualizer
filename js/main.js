@@ -116,18 +116,33 @@ async function handleFile(file) {
 // 搜索
 function setupSearch() {
   const searchBox = document.getElementById("searchBox");
+  const searchContentBox = document.getElementById("searchContentBox");
   const sortSelect = document.getElementById("sortSelect");
 
   searchBox.addEventListener("input", () => {
+    searchContentBox.value = "";
     const searchTerm = searchBox.value;
-    const sortBy = sortSelect.value;
+    const sortBy = 'update' || sortSelect.value;
     uiManager.filterConversations(searchTerm, sortBy);
+  });
+
+  searchContentBox.addEventListener("input", () => {
+    searchBox.value = "";
+    const searchTerm = searchContentBox.value;
+    const sortBy = 'update' || sortSelect.value;
+    uiManager.filterConversationsByContent(searchTerm, sortBy);
   });
 
   sortSelect.addEventListener("change", () => {
     const searchTerm = searchBox.value;
-    const sortBy = sortSelect.value;
+    const sortBy = 'update' || sortSelect.value;
     uiManager.filterConversations(searchTerm, sortBy);
+  });
+
+  sortSelect.addEventListener("change", () => {
+    const searchTerm = searchContentBox.value;
+    const sortBy = 'update' || sortSelect.value;
+    uiManager.filterConversationsByContent(searchTerm, sortBy);
   });
 }
 

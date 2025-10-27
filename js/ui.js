@@ -82,14 +82,14 @@ class UIManager {
               ${escapeHtml(conv.title || "未命名对话")}
             </div>
             <div class="conversation-meta">
-              ${conv.messageCount} 条消息 | 创建于 ${formatDate(conv.create_time)}
+              ${conv.messageCount} 条消息 | 创建于 ${formatDate(
+          conv.create_time
+        )}
             </div>
           </div>
 
             <button class="favorite-btn ${favClass}" 
-                    onclick="uiManager.toggleFavorite('${
-                      conv.id
-                    }', event)"
+                    onclick="uiManager.toggleFavorite('${conv.id}', event)"
                     title="${isFav ? "取消收藏" : "收藏"}">
               ${isFav ? "●" : "○"}
             </button>
@@ -270,9 +270,59 @@ class UIManager {
   // 筛选对话
   filterConversations(searchTerm, sortBy) {
     // 搜索过滤
-    this.filteredConversations = this.allConversations.filter((conv) =>
-      (conv.title || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    this.filteredConversations = this.allConversations.filter((conv) => {
+      const titleMatch = (conv.title || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+      const contentMatch = conv.messages?.some((msg) =>
+        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      return titleMatch;
+    });
+
+    // 排序
+    switch (sortBy) {
+      case "update":
+        this.filteredConversations.sort(
+          (a, b) => (b.create_time || 0) - (a.create_time || 0)
+        );
+        break;
+      case "create":
+        this.filteredConversations.sort(
+          (a, b) => (a.create_time || 0) - (b.create_time || 0)
+        );
+        break;
+      case "messages":
+        this.filteredConversations.sort(
+          (a, b) => b.messageCount - a.messageCount
+        );
+        break;
+      case "title":
+        this.filteredConversations.sort((a, b) =>
+          (a.title || "").localeCompare(b.title || "")
+        );
+        break;
+      case "favorites":
+        this.filteredConversations = this.filteredConversations.filter((conv) =>
+          favoritesManager.isFavorite(conv.id || conv.title)
+        );
+        break;
+    }
+
+    this.renderConversationList(this.filteredConversations);
+  }
+
+  filterConversationsByContent(searchTerm, sortBy) {
+    // 搜索过滤
+    this.filteredConversations = this.allConversations.filter((conv) => {
+      const contentMatch = conv.messages?.some((msg) =>
+        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      return contentMatch;
+    });
 
     // 排序
     switch (sortBy) {
