@@ -134,6 +134,7 @@ function setupSearch() {
   });
 
   sortSelect.addEventListener("change", () => {
+    searchContentBox.value = "";
     const searchTerm = searchBox.value;
     const sortBy = sortSelect.value;
     uiManager.filterConversations(searchTerm, sortBy);
