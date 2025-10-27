@@ -82,7 +82,7 @@
 
   .search-box,
   .filter-select {
-    padding: 8px;
+    padding: 9px;
     width: 100%;
     border-radius: 0;
     font-size: 0.9rem;
@@ -93,8 +93,8 @@
   }
 
   .list-container {
-    min-height: 50vh;
-    max-height: 60vh;
+    min-height: 80vh;
+    max-height: 100vh;
   }
 
   .messages-container {

@@ -135,14 +135,8 @@ function setupSearch() {
 
   sortSelect.addEventListener("change", () => {
     const searchTerm = searchBox.value;
-    const sortBy = 'update' || sortSelect.value;
+    const sortBy = sortSelect.value;
     uiManager.filterConversations(searchTerm, sortBy);
-  });
-
-  sortSelect.addEventListener("change", () => {
-    const searchTerm = searchContentBox.value;
-    const sortBy = 'update' || sortSelect.value;
-    uiManager.filterConversationsByContent(searchTerm, sortBy);
   });
 }
 

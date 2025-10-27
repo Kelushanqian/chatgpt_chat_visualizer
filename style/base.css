@@ -47,6 +47,6 @@ body {
 /* 对话列表 */
 .list-container,
 .messages-container {
-  min-height: 60vh;
+  min-height: 80vh;
   max-height: 100vh;
 }

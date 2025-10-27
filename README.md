@@ -1,4 +1,7 @@
-# 中文版
+欢迎访问 (welcome to visit)：  
+[https://kelushanqian.github.io/chatgpt_chat_visualizer/](https://kelushanqian.github.io/chatgpt_chat_visualizer/)  
+or  
+[https://chatgpt-chat-visualizer.vercel.app/](https://chatgpt-chat-visualizer.vercel.app/)  
 
 欢迎来到这个网页，
 这是一个 ChatGPT 导出数据的可视化小工具。
@@ -31,7 +34,7 @@
 - 数据存储在本地浏览器的 indexedDB 中，点击返回按钮「<」会自动清除。
 - 所有内容均离线保存在本地浏览器的 indexedDB，安全可靠。
 
-# English Version
+---
 
 Welcome to this webpage,  
 This is a small visualization tool for ChatGPT export data.  
@@ -63,3 +66,13 @@ Other Notes
 - If you exit the webpage without clicking the "<" button, the next time it will automatically load the conversations.json data you last uploaded from the browser's local indexedDB.  
 - Data is stored in the browser's local indexedDB; clicking the "<" button will automatically clear it.  
 - All content is stored offline in the browser's local indexedDB, safe and reliable.
+
+---
+
+网页展示 (display)：
+<img src="./cut/首页明亮主题.png">
+<img src="./cut/首页昏暗主题.png">
+<img src="./cut/主页明亮主题.png">
+<img src="./cut/主页昏暗主题.png">
+<img src="./cut/测试对话明亮.png">
+<img src="./cut/测试对话昏暗.png">
