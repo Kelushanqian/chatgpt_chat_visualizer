@@ -1,11 +1,11 @@
 /**
  * ui.js - 优化版 UI 渲染与交互管理
- *
+ * 
  * 优化目标：
  * 1. 消除切换对话时的卡顿
  * 2. 支持超长对话（1000+ 条消息）
  * 3. 保持响应丝滑，零阻塞
- *
+ * 
  * 核心技术：
  * - 渲染缓存 + DocumentFragment
  * - requestIdleCallback 分片渲染
@@ -33,7 +33,7 @@ const createMarkdownWorker = () => {
       }
     };
   `;
-  const blob = new Blob([workerCode], { type: "application/javascript" });
+  const blob = new Blob([workerCode], { type: 'application/javascript' });
   return new Worker(URL.createObjectURL(blob));
 };
 
@@ -97,15 +97,14 @@ class UIManager {
 
     // 渲染缓存：id -> 完整 HTML 字符串
     this.conversationCache = new Map();
-    this.virtualScroller = new VirtualScroller(this); // 新增这行
 
     // Markdown 异步解析
     this.markdownWorker = createMarkdownWorker();
-    this.markdownCache = new Map(); // id -> HTML
-    this.pendingMarkdown = new Set(); // 正在解析的 ID
+    this.markdownCache = new Map();      // id -> HTML
+    this.pendingMarkdown = new Set();    // 正在解析的 ID
 
     // 虚拟滚动（可选）
-    this.enableVirtualScroll = true;
+    this.enableVirtualScroll = false;
     this.virtualItemHeight = 90; // 预估每条消息高度
     this.virtualViewport = null;
 
@@ -143,24 +142,15 @@ class UIManager {
     });
 
     // 防抖搜索
-    searchBox.addEventListener(
-      "input",
-      debounce(() => {
-        searchContentBox.value = "";
-        this.filterConversations(searchBox.value, sortSelect.value);
-      }, 300)
-    );
+    searchBox.addEventListener("input", debounce(() => {
+      searchContentBox.value = "";
+      this.filterConversations(searchBox.value, sortSelect.value);
+    }, 300));
 
-    searchContentBox.addEventListener(
-      "input",
-      debounce(() => {
-        searchBox.value = "";
-        this.filterConversationsByContent(
-          searchContentBox.value,
-          sortSelect.value
-        );
-      }, 300)
-    );
+    searchContentBox.addEventListener("input", debounce(() => {
+      searchBox.value = "";
+      this.filterConversationsByContent(searchContentBox.value, sortSelect.value);
+    }, 300));
 
     sortSelect.addEventListener("change", () => {
       const term = searchBox.value || searchContentBox.value;
@@ -183,13 +173,10 @@ class UIManager {
   // ==================== 统计更新 ====================
 
   updateStatistics(stats) {
-    document.getElementById("totalConversations").textContent =
-      stats.totalConversations;
+    document.getElementById("totalConversations").textContent = stats.totalConversations;
     document.getElementById("totalMessages").textContent = stats.totalMessages;
-    document.getElementById("userMessages").textContent =
-      stats.totalUserMessages;
-    document.getElementById("assistantMessages").textContent =
-      stats.totalAssistantMessages;
+    document.getElementById("userMessages").textContent = stats.totalUserMessages;
+    document.getElementById("assistantMessages").textContent = stats.totalAssistantMessages;
   }
 
   // ==================== 对话列表渲染 ====================
@@ -206,16 +193,12 @@ class UIManager {
 
       item.innerHTML = `
         <div class="conversation-info">
-          <div class="conversation-title">${escapeHtml(
-            conv.title || "未命名对话"
-          )}</div>
+          <div class="conversation-title">${escapeHtml(conv.title || "未命名对话")}</div>
           <div class="conversation-meta">
             ${conv.messageCount} 条消息 | 创建于 ${formatDate(conv.create_time)}
           </div>
         </div>
-        <button class="favorite-btn ${isFav ? "active" : ""}" title="${
-        isFav ? "取消收藏" : "收藏"
-      }">
+        <button class="favorite-btn ${isFav ? "active" : ""}" title="${isFav ? "取消收藏" : "收藏"}">
           ${isFav ? "●" : "○"}
         </button>
       `;
@@ -234,9 +217,7 @@ class UIManager {
     document.querySelectorAll(".conversation-item").forEach((item) => {
       item.classList.remove("active");
     });
-    const activeItem = document.querySelector(
-      `.conversation-item[data-id="${id}"]`
-    );
+    const activeItem = document.querySelector(`.conversation-item[data-id="${id}"]`);
     if (activeItem) activeItem.classList.add("active");
 
     // 缓存命中 → 秒开
@@ -250,8 +231,7 @@ class UIManager {
     if (!conversation) return;
 
     this.currentConversation = conversation;
-    document.getElementById("conversationTitle").textContent =
-      conversation.title || "未命名对话";
+    document.getElementById("conversationTitle").textContent = conversation.title || "未命名对话";
     document.getElementById("exportBtn").style.display = "inline-block";
 
     // 开始分片渲染
@@ -269,7 +249,7 @@ class UIManager {
 
   renderConversationWithBatching(conversation) {
     const container = document.getElementById("messagesContainer");
-    container.innerHTML = '<div class="loading-messages">Loading...</div>';
+    container.innerHTML = '<div class="loading-messages">加载中...</div>';
 
     const messages = conversation.messages || [];
     let index = 0;
@@ -302,29 +282,11 @@ class UIManager {
 
     // 预生成完整 HTML 用于缓存
     setTimeout(() => {
-      const fullHTML = messages
-        .map((msg) => this.renderMessageSync(msg))
-        .join("");
+      const fullHTML = messages.map(msg => this.renderMessageSync(msg)).join("");
       this.conversationCache.set(conversation.id, fullHTML);
     }, 0);
 
     requestIdleCallback(renderBatch);
-
-    requestIdleCallback(() => {
-      const fullHTML = messages
-        .map((msg) => this.renderMessageSync(msg))
-        .join("");
-      this.conversationCache.set(conversation.id, fullHTML);
-
-      // 启用虚拟滚动
-      if (this.virtualScroller.init(conversation)) {
-        // 虚拟滚动已接管
-      } else {
-        // 降级：普通渲染
-        container.innerHTML = fullHTML;
-        container.scrollTop = 0;
-      }
-    });
   }
 
   createMessageElement(msg) {
@@ -386,18 +348,11 @@ class UIManager {
   // ==================== 收藏功能 ====================
 
   async toggleFavorite(conversationId) {
-    const conversation = this.allConversations.find(
-      (c) => c.id === conversationId
-    );
+    const conversation = this.allConversations.find(c => c.id === conversationId);
     if (!conversation) return;
 
-    const isFavorited = await favoritesManager.toggleFavorite(
-      conversationId,
-      conversation
-    );
-    const btn = document.querySelector(
-      `.conversation-item[data-id="${conversationId}"] .favorite-btn`
-    );
+    const isFavorited = await favoritesManager.toggleFavorite(conversationId, conversation);
+    const btn = document.querySelector(`.conversation-item[data-id="${conversationId}"] .favorite-btn`);
 
     if (btn) {
       btn.classList.toggle("active", isFavorited);
@@ -421,20 +376,12 @@ class UIManager {
       return;
     }
 
-    const html = favorites
-      .map(
-        (fav) => `
-      <div class="favorite-item" onclick="uiManager.selectConversation('${
-        fav.conversationId
-      }')">
-        <div class="favorite-title">${escapeHtml(
-          fav.title || "未命名对话"
-        )}</div>
+    const html = favorites.map(fav => `
+      <div class="favorite-item" onclick="uiManager.selectConversation('${fav.conversationId}')">
+        <div class="favorite-title">${escapeHtml(fav.title || "未命名对话")}</div>
         <div class="favorite-time">${formatDate(fav.timestamp / 1000)}</div>
       </div>
-    `
-      )
-      .join("");
+    `).join("");
 
     container.innerHTML = html;
   }
@@ -442,7 +389,7 @@ class UIManager {
   // ==================== 搜索与排序 ====================
 
   filterConversations(searchTerm, sortBy) {
-    this.filteredConversations = this.allConversations.filter((conv) =>
+    this.filteredConversations = this.allConversations.filter(conv =>
       (conv.title || "").toLowerCase().includes(searchTerm.toLowerCase())
     );
     this.applySorting(sortBy);
@@ -450,8 +397,8 @@ class UIManager {
   }
 
   filterConversationsByContent(searchTerm, sortBy) {
-    this.filteredConversations = this.allConversations.filter((conv) =>
-      conv.messages?.some((msg) =>
+    this.filteredConversations = this.allConversations.filter(conv =>
+      conv.messages?.some(msg =>
         msg.content.toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
@@ -462,24 +409,16 @@ class UIManager {
   applySorting(sortBy) {
     switch (sortBy) {
       case "update":
-        this.filteredConversations.sort(
-          (a, b) => (b.create_time || 0) - (a.create_time || 0)
-        );
+        this.filteredConversations.sort((a, b) => (b.create_time || 0) - (a.create_time || 0));
         break;
       case "create":
-        this.filteredConversations.sort(
-          (a, b) => (a.create_time || 0) - (b.create_time || 0)
-        );
+        this.filteredConversations.sort((a, b) => (a.create_time || 0) - (b.create_time || 0));
         break;
       case "messages":
-        this.filteredConversations.sort(
-          (a, b) => b.messageCount - a.messageCount
-        );
+        this.filteredConversations.sort((a, b) => b.messageCount - a.messageCount);
         break;
       case "title":
-        this.filteredConversations.sort((a, b) =>
-          (a.title || "").localeCompare(b.title || "")
-        );
+        this.filteredConversations.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
         break;
     }
   }
@@ -489,7 +428,7 @@ class UIManager {
   renderDailyTrendChart(dailyData) {
     const container = document.getElementById("dailyTrendChart");
     container.innerHTML = "";
-    const maxCount = Math.max(...dailyData.map((d) => d.count), 1);
+    const maxCount = Math.max(...dailyData.map(d => d.count), 1);
     const chartInner = document.createElement("div");
     chartInner.className = "chart-inner";
 
@@ -498,7 +437,7 @@ class UIManager {
     chartInner.appendChild(tooltip);
 
     const dataToShow = dailyData.slice(-20);
-    dataToShow.forEach((item) => {
+    dataToShow.forEach(item => {
       const bar = document.createElement("div");
       bar.className = "chart-bar";
       bar.style.height = `${(item.count / maxCount) * 100}%`;
@@ -508,7 +447,7 @@ class UIManager {
       bar.addEventListener("click", () => {
         tooltip.textContent = `${item.date}: ${item.count} 条`;
         tooltip.style.opacity = 0.9;
-        setTimeout(() => (tooltip.style.opacity = 0), 2000);
+        setTimeout(() => tooltip.style.opacity = 0, 2000);
       });
 
       chartInner.appendChild(bar);
@@ -516,25 +455,17 @@ class UIManager {
 
     container.appendChild(chartInner);
 
-    document.addEventListener(
-      "click",
-      (e) => {
-        if (!chartInner.contains(e.target)) {
-          tooltip.style.opacity = 0;
-        }
-      },
-      { once: true }
-    );
+    document.addEventListener("click", (e) => {
+      if (!chartInner.contains(e.target)) {
+        tooltip.style.opacity = 0;
+      }
+    }, { once: true });
   }
 
   // ==================== 虚拟滚动（可选） ====================
 
   setupVirtualScrollIfNeeded() {
-    if (
-      !this.enableVirtualScroll ||
-      this.currentConversation.messageCount < 100
-    )
-      return;
+    if (!this.enableVirtualScroll || this.currentConversation.messageCount < 100) return;
 
     const container = document.getElementById("messagesContainer");
     if (this.virtualViewport) return;
@@ -565,181 +496,6 @@ class UIManager {
     document.getElementById("loading").classList.add("hidden");
     document.getElementById("emptyState").classList.add("hidden");
     document.getElementById("dashboard").classList.add("hidden");
-  }
-}
-
-// ==================== 虚拟滚动模块 ====================
-
-/**
- * 虚拟滚动模块 - 集成到 UIManager
- * 
- * 特性：
- * - 纯 JS 实现，0 依赖
- * - 支持动态高度（自动测量）
- * - 滚动位置记忆
- * - 与 Markdown Worker 完美协同
- * - 仅在 > 80 条消息时启用
- */
-
-class VirtualScroller {
-  constructor(uiManager) {
-    this.ui = uiManager;
-    this.container = null;
-    this.viewport = null;
-    this.items = [];
-    this.itemHeights = new Map();     // id -> height
-    this.totalHeight = 0;
-    this.visibleCount = 0;
-    this.startIndex = 0;
-    this.endIndex = 0;
-    this.paddingTop = 0;
-    this.paddingBottom = 0;
-    this.scrollTop = 0;
-    this.enabled = false;
-  }
-
-  /**
-   * 初始化虚拟滚动
-   */
-  init(conversation) {
-    if (conversation.messageCount <= 80) {
-      this.disable();
-      return false;
-    }
-
-    this.container = document.getElementById("messagesContainer");
-    this.items = conversation.messages || [];
-    this.enabled = true;
-
-    // 创建虚拟视口
-    this.createViewport();
-    this.calculateHeights();
-    this.render();
-
-    // 绑定滚动
-    this.viewport.addEventListener("scroll", this.onScroll.bind(this));
-    return true;
-  }
-
-  createViewport() {
-    const existing = this.container.querySelector(".virtual-viewport");
-    if (existing) {
-      this.viewport = existing;
-      return;
-    }
-
-    this.container.innerHTML = `
-      <div class="virtual-viewport">
-        <div class="virtual-padding-top"></div>
-        <div class="virtual-list"></div>
-        <div class="virtual-padding-bottom"></div>
-      </div>
-    `;
-
-    this.viewport = this.container.querySelector(".virtual-viewport");
-    this.paddingTopEl = this.container.querySelector(".virtual-padding-top");
-    this.paddingBottomEl = this.container.querySelector(".virtual-padding-bottom");
-    this.listEl = this.container.querySelector(".virtual-list");
-  }
-
-  /**
-   * 预计算所有消息高度（首次渲染时）
-   */
-  calculateHeights() {
-    this.totalHeight = 0;
-    const fragment = document.createDocumentFragment();
-
-    this.items.forEach((msg, i) => {
-      const el = this.ui.createMessageElement(msg);
-      el.style.position = "absolute";
-      el.style.visibility = "hidden";
-      el.style.width = "100%";
-      fragment.appendChild(el);
-
-      // 测量高度
-      this.listEl.appendChild(fragment);
-      const height = el.offsetHeight || 90;
-      this.itemHeights.set(msg.id, height);
-      this.totalHeight += height;
-
-      // 清理
-      this.listEl.innerHTML = "";
-    });
-
-    this.visibleCount = Math.ceil(this.viewport.clientHeight / 90) + 5;
-  }
-
-  /**
-   * 渲染可视区域
-   */
-  render() {
-    if (!this.enabled) return;
-
-    const scrollTop = this.viewport.scrollTop;
-    let accumulated = 0;
-    let start = 0;
-
-    // 找到起始索引
-    for (let i = 0; i < this.items.length; i++) {
-      const id = this.items[i].id;
-      const h = this.itemHeights.get(id) || 90;
-      if (accumulated + h > scrollTop) {
-        start = Math.max(0, i - 2);
-        break;
-      }
-      accumulated += h;
-    }
-
-    this.startIndex = start;
-    this.endIndex = Math.min(start + this.visibleCount, this.items.length);
-
-    // 计算 padding
-    let paddingTop = 0;
-    for (let i = 0; i < start; i++) {
-      paddingTop += this.itemHeights.get(this.items[i].id) || 90;
-    }
-
-    let paddingBottom = 0;
-    for (let i = this.endIndex; i < this.items.length; i++) {
-      paddingBottom += this.itemHeights.get(this.items[i].id) || 90;
-    }
-
-    this.paddingTopEl.style.height = `${paddingTop}px`;
-    this.paddingBottomEl.style.height = `${paddingBottom}px`;
-
-    // 渲染可见项
-    const fragment = document.createDocumentFragment();
-    for (let i = start; i < this.endIndex; i++) {
-      const msg = this.items[i];
-      const el = this.ui.createMessageElement(msg);
-      el.style.position = "relative";
-      fragment.appendChild(el);
-    }
-
-    this.listEl.innerHTML = "";
-    this.listEl.appendChild(fragment);
-
-    // 恢复滚动位置
-    if (Math.abs(this.viewport.scrollTop - scrollTop) > 1) {
-      this.viewport.scrollTop = scrollTop;
-    }
-  }
-
-  onScroll() {
-    if (!this.enabled) return;
-    requestAnimationFrame(() => {
-      this.render();
-      this.ui.rerenderVisibleMessages();
-    });
-  }
-
-  disable() {
-    if (!this.enabled) return;
-    this.enabled = false;
-    if (this.viewport) {
-      this.viewport.removeEventListener("scroll", this.onScroll.bind(this));
-      this.container.innerHTML = this.ui.conversationCache.get(this.ui.currentConversation.id) || "";
-    }
   }
 }
 
