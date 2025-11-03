@@ -46,9 +46,7 @@ header p {
 
 .theme-toggle .theme-btn:hover,
 .back-btn:hover {
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-hover);
-  transition: all 0.3s ease;
+  border-color: var(--text-muted);
 }
 
 /* 文件上传区域 */
@@ -57,14 +55,12 @@ header p {
   border-radius: 15px;
   padding: 50px 0;
   text-align: center;
-  transition: all 0.3s ease;
   cursor: pointer;
   color: var(--text-primary);
 }
 
 .upload-area:hover,
 .upload-area.dragover {
-  border-color: var(--border-hover);
   background: var(--bg-select);
 }
 
@@ -84,7 +80,6 @@ header p {
   padding: 10px 15px;
   border: none;
   border-radius: 10px;
-  transition: all 0.3s ease;
   cursor: pointer;
   font-weight: 500;
 }
@@ -105,7 +100,6 @@ header p {
 
 .btn-secondary:hover {
   background: var(--bg-btn-secondary-hover);
-  box-shadow: var(--shadow-hover);
 }
 
 /* 加载状态 */
@@ -130,7 +124,6 @@ header p {
   border-radius: 20px;
   padding: 25px;
   border: 2px solid var(--border-primary);
-  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
 }
@@ -153,7 +146,6 @@ header p {
   border-radius: 15px;
   color: var(--text-primary);
   border: 2px solid var(--border-primary);
-  transition: all 0.3s ease;
 }
 
 .stat-number {
@@ -176,15 +168,14 @@ header p {
 .chart-bar {
   background-color: var(--color-primary);
   margin: 0 1px;
-  transition: all 0.3s ease;
   border-radius: 2px 2px 0 0;
   cursor: pointer;
   opacity: 0.8;
 }
 
 .chart-bar:hover {
-  opacity: 1;
-  background-color: var(--color-primary-hover);
+  background-color: var(--text-primary);
+  transition: background-color 0.3s ease;
 }
 
 /* 导出区域 */
@@ -198,7 +189,6 @@ header p {
 
 .like-label {
   opacity: 0.8;
-  font-family: sans-serif;
 }
 
 .something-container {
@@ -266,7 +256,6 @@ header p {
   border-radius: 12px;
   font-size: 0.9rem;
   color: var(--text-primary);
-  transition: all 0.3s ease;
 }
 
 .search-box {
@@ -276,8 +265,6 @@ header p {
 .search-box:focus,
 .filter-select:focus {
   outline: none;
-  border-color: var(--border-active);
-  box-shadow: var(--shadow-focus);
 }
 
 .search-box::placeholder {
@@ -297,7 +284,6 @@ header p {
   margin-bottom: 10px;
   border-radius: 5px;
   cursor: pointer;
-  transition: all 0.3s ease;
   border: 2px solid var(--border-primary);
   display: flex;
   align-items: center;
@@ -306,13 +292,10 @@ header p {
 
 .conversation-item:hover {
   background: var(--bg-select);
-  box-shadow: var(--shadow-hover);
 }
 
 .conversation-item.active {
   background: var(--bg-stat);
-  border-color: var(--border-active);
-  box-shadow: var(--shadow-active);
 }
 
 .conversation-title {
@@ -328,13 +311,15 @@ header p {
   color: var(--text-secondary);
 }
 
+.loading-messages {
+  text-align: center;
+}
+
 .message {
   margin-bottom: 12px;
   padding: 10px 12px;
   border-radius: 15px;
-  transition: all 0.3s ease;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 0.9rem;
 }
 
@@ -380,10 +365,6 @@ header p {
   font-size: 1.6rem;
   color: var(--border-primary);
   z-index: 100;
-}
-
-.conversation-item .favorite-btn:hover {
-  color: var(--border-hover);
 }
 
 /* Markdown 样式 */
@@ -458,7 +439,7 @@ header p {
 }
 
 .message-content a:hover {
-  color: var(--color-primary-hover);
+  color: var(--text-em);
 }
 
 .message-content table {
@@ -528,7 +509,22 @@ header p {
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 700;
-  transition: opacity 0.2s;
+  transition: opacity 0.1s;
   opacity: 0;
   z-index: 100;
+}
+
+.virtual-viewport {
+  height: 100%;
+  overflow-y: auto;
+  contain: strict;
+}
+
+.virtual-padding-top,
+.virtual-padding-bottom {
+  content: "";
+}
+
+.virtual-list > .message {
+  contain: layout style paint;
 }

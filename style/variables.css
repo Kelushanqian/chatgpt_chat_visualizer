@@ -13,12 +13,9 @@
 
   /* 主色调 */
   --color-primary: #b38eb6;
-  --color-primary-hover: #a888b5;
 
   /* 边框色 */
   --border-primary: rgba(139, 112, 136, 0.2);
-  --border-hover: #bdabc5;
-  --border-active: #d2c4d3;
 
   /* 统计卡片 */
   --bg-stat: linear-gradient(135deg, #f4e7f1 0%, #f7e9f4 100%);
@@ -32,12 +29,7 @@
   --bg-btn-primary-hover: #a888b5;
   --bg-btn-secondary: #e8dde4;
   --bg-btn-secondary-hover: #ddd0d9;
-
-  /* 阴影 */
-  --shadow-focus: 2px 3px 10px rgba(139, 112, 136, 0.25);
-  --shadow-hover: 0 4px 15px rgba(139, 112, 136, 0.15);
-  --shadow-active: 2px 3px 5px rgba(139, 112, 136, 0.2);
-
+  
   /* 滚动条 */
   --scrollbar-track: transparent;
   --scrollbar-thumb: rgba(139, 112, 136, 0.3);
@@ -58,12 +50,9 @@
 
   /* 主色调 */
   --color-primary: #a58cba;
-  --color-primary-hover: #7c668f;
 
   /* 边框色 */
   --border-primary: rgba(168, 133, 199, 0.3);
-  --border-hover: #877498;
-  --border-active: #847a8e;
 
   /* 统计卡片 */
   --bg-stat: #3d3a3f;
@@ -77,11 +66,6 @@
   --bg-btn-primary-hover: #816b94;
   --bg-btn-secondary: #5a5458;
   --bg-btn-secondary-hover: #6a6468;
-
-  /* 阴影 */
-  --shadow-focus: 2px 3px 12px rgba(168, 133, 199, 0.25);
-  --shadow-hover: 0 4px 15px rgba(0, 0, 0, 0.25);
-  --shadow-active: 2px 3px 5px rgba(168, 133, 199, 0.3);
 
   /* 滚动条 */
   --scrollbar-track: transparent;
