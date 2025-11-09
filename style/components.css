@@ -178,6 +178,16 @@ header p {
   transition: background-color 0.3s ease;
 }
 
+.chart-labels {
+  display: flex;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.chart-labels div {
+  transform: rotate(10deg);
+}
+
 /* 导出区域 */
 .export-section {
   text-align: center;
