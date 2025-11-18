@@ -98,7 +98,7 @@ class ChatDatabase {
     );
   }
 
-  // 收藏相关操作
+  // 收藏
   async addFavorite(conversationId) {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(["favorites"], "readwrite");

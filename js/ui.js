@@ -1,19 +1,3 @@
-/**
- * ui.js - 优化版 UI 渲染与交互管理
- *
- * 优化目标：
- * 1. 消除切换对话时的卡顿
- * 2. 支持超长对话（1000+ 条消息）
- * 3. 保持响应丝滑，零阻塞
- *
- * 核心技术：
- * - 渲染缓存 + DocumentFragment
- * - requestIdleCallback 分片渲染
- * - Web Worker 异步 Markdown 解析
- * - 事件委托 + 防抖
- * - 可切换虚拟滚动（超长对话）
- */
-
 import chatDB from "./db.js";
 import { favoritesManager } from "./favorites.js";
 
@@ -73,6 +57,14 @@ export function formatDate(timestamp) {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+export function formatDateOnly(date) {
+  return date.toLocaleString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).replaceAll("/", "-");
 }
 
 /**
@@ -505,7 +497,7 @@ class UIManager {
 
     // 构建完整数据：补 0
     const fullData = dates.map((date) => {
-      const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+      const dateStr = formatDateOnly(date);
       return {
         date: dateStr,
         count: dataMap.get(dateStr) || 0,
