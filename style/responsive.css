@@ -23,7 +23,6 @@
 
   header .theme-toggle {
     top: 45px;
-    right: 15px;
   }
 
   .theme-toggle .theme-btn,
@@ -67,7 +66,7 @@
   }
 
   .conversation-item .favorite-btn {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
   }
 
   .controls {
@@ -94,11 +93,11 @@
   }
 
   .list-container {
-    max-height: 120vh;
+    max-height: 65vh;
   }
 
   .messages-container {
-    max-height: 100vh;
+    max-height: 85vh;
   }
 
   .conversation-item {

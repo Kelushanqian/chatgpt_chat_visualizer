@@ -23,7 +23,7 @@ async function initApp() {
     setupFileHandling();
     setupSearch();
     setupThemeToggle();
-    // loadTheme();
+    loadTheme();
 
     // 尝试从数据库加载已有数据
     const conversations = await chatDB.getAllConversations();
@@ -115,29 +115,30 @@ async function handleFile(file) {
 
 // 搜索
 function setupSearch() {
-  const searchBox = document.getElementById("searchBox");
+  const searchTitleBox = document.getElementById("searchTitleBox");
   const searchContentBox = document.getElementById("searchContentBox");
   const sortSelect = document.getElementById("sortSelect");
 
-  searchBox.addEventListener("input", () => {
+  searchTitleBox.addEventListener("input", () => {
     searchContentBox.value = "";
-    const searchTerm = searchBox.value;
-    const sortBy = 'update' || sortSelect.value;
-    uiManager.filterConversations(searchTerm, sortBy);
+    const searchTerm = searchTitleBox.value;
+    const sortBy = sortSelect.value;
+    uiManager.filterConversationsByTitle(searchTerm, sortBy);
   });
 
   searchContentBox.addEventListener("input", () => {
-    searchBox.value = "";
+    searchTitleBox.value = "";
     const searchTerm = searchContentBox.value;
-    const sortBy = 'update' || sortSelect.value;
+    const sortBy = sortSelect.value;
     uiManager.filterConversationsByContent(searchTerm, sortBy);
   });
 
   sortSelect.addEventListener("change", () => {
-    searchContentBox.value = "";
-    const searchTerm = searchBox.value;
-    const sortBy = sortSelect.value;
-    uiManager.filterConversations(searchTerm, sortBy);
+    if (searchTitleBox.value) {
+      uiManager.filterConversationsByTitle(searchTitleBox.value, sortSelect.value);
+    } else if (searchContentBox.value) {
+      uiManager.filterConversationsByContent(searchContentBox.value, sortSelect.value);
+    }
   });
 }
 
@@ -223,7 +224,7 @@ function setupThemeToggle() {
 function toggleTheme() {
   const Theme = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
   setTheme(Theme);
-  // saveTheme(Theme);
+  saveTheme(Theme);
 }
 
 function setTheme(theme) {
@@ -231,24 +232,24 @@ function setTheme(theme) {
   root.setAttribute("data-theme", theme);
 }
 
-// function saveTheme(theme) {
-//   localStorage.setItem("chatgpt-viewer-theme", theme);
-//   console.log('已保存主题')
-// }
+function saveTheme(theme) {
+  localStorage.setItem("chatgpt-viewer-theme", theme);
+  console.log('已保存主题')
+}
 
-// function loadTheme() {
-//   try {
-//     const savedTheme = localStorage.getItem("chatgpt-viewer-theme");
-//     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-//       .matches
-//       ? "dark"
-//       : "light";
-//     const theme = savedTheme || systemTheme;
-//     setTheme(theme);
-//   } catch (error) {
-//     setTheme("light");
-//   }
-// }
+function loadTheme() {
+  try {
+    const savedTheme = localStorage.getItem("chatgpt-viewer-theme");
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+      .matches
+      ? "dark"
+      : "light";
+    const theme = savedTheme || systemTheme;
+    setTheme(theme);
+  } catch (error) {
+    setTheme("light");
+  }
+}
 
 // 清空数据库
 async function clearDatabase() {

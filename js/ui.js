@@ -337,28 +337,23 @@ class UIManager {
   }
 
   // 筛选对话
-  filterConversations(searchTerm, sortBy) {
+  filterConversationsByTitle(searchTerm, sortBy) {
     // 搜索过滤
     this.filteredConversations = this.allConversations.filter((conv) => {
       const titleMatch = (conv.title || "")
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-
-      const contentMatch = conv.messages?.some((msg) =>
-        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
       return titleMatch;
     });
 
     // 排序
     switch (sortBy) {
-      case "update":
+      case "latest":
         this.filteredConversations.sort(
           (a, b) => (b.create_time || 0) - (a.create_time || 0)
         );
         break;
-      case "create":
+      case "oldest":
         this.filteredConversations.sort(
           (a, b) => (a.create_time || 0) - (b.create_time || 0)
         );
@@ -371,11 +366,6 @@ class UIManager {
       case "title":
         this.filteredConversations.sort((a, b) =>
           (a.title || "").localeCompare(b.title || "")
-        );
-        break;
-      case "favorites":
-        this.filteredConversations = this.filteredConversations.filter((conv) =>
-          favoritesManager.isFavorite(conv.id || conv.title)
         );
         break;
     }
@@ -395,12 +385,12 @@ class UIManager {
 
     // 排序
     switch (sortBy) {
-      case "update":
+      case "latest":
         this.filteredConversations.sort(
           (a, b) => (b.create_time || 0) - (a.create_time || 0)
         );
         break;
-      case "create":
+      case "oldest":
         this.filteredConversations.sort(
           (a, b) => (a.create_time || 0) - (b.create_time || 0)
         );
@@ -413,11 +403,6 @@ class UIManager {
       case "title":
         this.filteredConversations.sort((a, b) =>
           (a.title || "").localeCompare(b.title || "")
-        );
-        break;
-      case "favorites":
-        this.filteredConversations = this.filteredConversations.filter((conv) =>
-          favoritesManager.isFavorite(conv.id || conv.title)
         );
         break;
     }

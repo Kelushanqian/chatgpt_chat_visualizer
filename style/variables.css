@@ -38,7 +38,7 @@
 /* 深色主题变量 */
 [data-theme="dark"] {
   /* 背景色 */
-  --bg-primary: #2d2d2d;
+  --bg-primary: #3a3737;
   --bg-card: rgba(40, 40, 40, 0.9);
   --bg-select: rgba(80, 60, 80, 0.5);
 
@@ -52,7 +52,7 @@
   --color-primary: #a58cba;
 
   /* 边框色 */
-  --border-primary: rgba(168, 133, 199, 0.3);
+  --border-primary: rgba(177, 174, 180, 0.3);
 
   /* 统计卡片 */
   --bg-stat: #3d3a3f;
