@@ -9,9 +9,9 @@ header .title-section {
 }
 
 header .theme-toggle {
-  position: fixed;
+  position: absolute;
   top: 35px;
-  right: 35px;
+  right: 0;
 }
 
 header h1 {
@@ -217,13 +217,13 @@ header p {
 .something-content {
   flex: 1;
   overflow-y: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   border-top: solid 2px var(--border-primary);
 }
 
 .favorites-list {
-  max-height: 394px;
+  max-height: 400px;
   margin-bottom: 15px;
   border-bottom: 2px solid var(--border-primary);
 }
@@ -264,7 +264,6 @@ header p {
   width: 100%;
   border: 2px solid var(--border-primary);
   border-radius: 12px;
-  font-size: 0.9rem;
   color: var(--text-primary);
 }
 
@@ -285,7 +284,7 @@ header p {
 .messages-list {
   margin-top: 10px;
   overflow-y: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
@@ -415,8 +414,8 @@ header p {
 }
 
 .message-content pre {
-  background: var(--bg-card);
-  padding: 0 0.2em;
+  background: var(--bg-stat);
+  padding: 1rem;
   margin: 0.3em 0;
   white-space: pre-wrap; /* 保持空格和换行，但允许自动换行 */
   word-wrap: break-word; /* 长单词强制换行 */
@@ -456,7 +455,7 @@ header p {
   border-collapse: collapse;
   display: block;
   overflow-x: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 

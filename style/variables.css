@@ -1,7 +1,7 @@
 /* CSS变量定义 - 浅色主题 */
 :root {
   /* 背景色 */
-  --bg-primary: linear-gradient(135deg, #fdf7f1 0%, #fff6f5 50%, #f8f5f9 100%);
+  --bg-primary: #f8f1f0;
   --bg-card: rgba(255, 255, 255, 0.9);
   --bg-select: rgba(244, 231, 241, 0.5);
 
@@ -43,10 +43,10 @@
   --bg-select: rgba(80, 60, 80, 0.5);
 
   /* 文本色 */
-  --text-primary: #d6d1d6;
+  --text-primary: #dadada;
   --text-secondary: #cec2ce;
-  --text-muted: #dadada;
-  --text-em: #f1f1f1;
+  --text-muted: #f1f1f1;
+  --text-em: #c8bdc8;
 
   /* 主色调 */
   --color-primary: #a58cba;
@@ -58,7 +58,7 @@
   --bg-stat: #3d3a3f;
 
   /* 消息背景 */
-  --bg-message: #3d3a3f;
+  --bg-message: #4b494c;
   --border-message: rgba(157, 143, 170, 0.3);
 
   /* 按钮色 */

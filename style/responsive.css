@@ -73,6 +73,7 @@
   .controls {
     flex-direction: column;
     gap: 0;
+    font-size: 0.6rem;
   }
 
   .controls :nth-child(2) {
@@ -82,7 +83,7 @@
 
   .search-box,
   .filter-select {
-    padding: 9px;
+    padding: 6px;
     width: 100%;
     border-radius: 0;
     font-size: 0.9rem;
@@ -93,12 +94,10 @@
   }
 
   .list-container {
-    min-height: 80vh;
-    max-height: 100vh;
+    max-height: 120vh;
   }
 
   .messages-container {
-    min-height: 0;
     max-height: 100vh;
   }
 
@@ -136,5 +135,9 @@
 
   .message.assistant {
     margin-right: 5%;
+  }
+
+  .zhanwei {
+    display: none;
   }
 }

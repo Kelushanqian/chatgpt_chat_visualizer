@@ -7,11 +7,11 @@
 
 body {
   font-family: "Noto Serif SC", serif;
-  background: var(--bg-primary);
+  background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 /* 总页面 */
@@ -47,6 +47,5 @@ body {
 /* 对话列表 */
 .list-container,
 .messages-container {
-  min-height: 100vh;
-  max-height: 120vh;
+  max-height: 95vh;
 }

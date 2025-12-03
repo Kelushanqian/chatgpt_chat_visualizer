@@ -172,6 +172,7 @@
           <!-- 左侧下：对话列表 -->
           <div class="card list-container">
             <h2>对话列表</h2>
+
             <div class="controls">
               <input
                 type="text"
@@ -198,30 +199,53 @@
           </div>
 
           <!-- 右侧下：对话详情 -->
-          <div class="card messages-container">
+          <div id="messages-card" class="card messages-container">
             <h2 id="conversationTitle">选择一个对话查看详情</h2>
-
-            <button
-              class="btn btn-secondary"
-              onclick="exportConversation()"
-              id="exportBtn"
-              style="display: none"
-            >
-              导出此对话
-            </button>
-
             <div id="messagesContainer" class="messages-list">
               <div class="empty-state">
                 <p>点击对话列表中的任意对话查看详细内容</p>
               </div>
             </div>
           </div>
+
+          <div class="zhanwei"></div>
+          <button
+            class="btn btn-secondary"
+            onclick="takeScreenshot()"
+            id="generateBtn"
+            style="display: none"
+          >
+            生成小卡片
+          </button>
         </div>
       </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- <script src="./js/chat.js"></script> -->
     <script type="module" src="./js/main.js"></script>
+    <script>
+      function takeScreenshot() {
+        const element = document.getElementById("messages-card");
+
+        html2canvas(element, {
+          scale: 2, // 可选：提高清晰度
+          useCORS: true, // 允许加载跨域图片
+          backgroundColor: null, // 透明背景设为 null
+          logging: false, // 关闭日志
+        }).then((canvas) => {
+          // 方法1：直接下载
+          const link = document.createElement("a");
+          link.download = "div-screenshot.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+
+          // 方法2：如果只想获取 base64 或 blob
+          // const dataURL = canvas.toDataURL('image/png');
+          // const blob = canvas.toBlob(blob => { ... });
+        });
+      }
+    </script>
   </body>
 </html>

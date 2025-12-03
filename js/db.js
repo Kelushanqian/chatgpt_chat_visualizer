@@ -11,7 +11,6 @@ class ChatDatabase {
   async init() {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
-
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
         this.db = request.result;
@@ -64,7 +63,7 @@ class ChatDatabase {
     return tx.complete;
   }
 
-  // 获取所有对话（可选择是否加载消息）
+  // 获取所有对话
   async getAllConversations() {
     return new Promise((resolve, reject) => {
       const tx = this.db.transaction(["conversations"], "readonly");
@@ -88,14 +87,6 @@ class ChatDatabase {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
-  }
-
-  // 搜索对话
-  async searchConversations(searchTerm) {
-    const allConversations = await this.getAllConversations();
-    return allConversations.filter((conv) =>
-      (conv.title || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
   }
 
   // 收藏

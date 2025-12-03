@@ -1,28 +1,8 @@
+// UI 渲染和交互管理
 import chatDB from "./db.js";
 import { favoritesManager } from "./favorites.js";
 
-// ==================== Markdown Web Worker ====================
-
-// 创建内联 Worker（避免额外文件）
-const createMarkdownWorker = () => {
-  const workerCode = `
-    importScripts('https://cdn.jsdelivr.net/npm/marked/marked.min.js');
-    self.onmessage = function(e) {
-      const { id, text } = e.data;
-      try {
-        const html = marked.parse(text);
-        self.postMessage({ id, html, success: true });
-      } catch (err) {
-        self.postMessage({ id, html: '<p>解析失败</p>', success: false });
-      }
-    };
-  `;
-  const blob = new Blob([workerCode], { type: "application/javascript" });
-  return new Worker(URL.createObjectURL(blob));
-};
-
-// ==================== marked 配置 ====================
-
+// 配置marked.js
 if (typeof marked !== "undefined") {
   marked.setOptions({
     breaks: true,
@@ -33,20 +13,33 @@ if (typeof marked !== "undefined") {
   });
 }
 
-// ==================== 工具函数 ====================
-
-/**
- * 转义 HTML 防止 XSS
- */
+// 工具函数
 function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 }
 
-/**
- * 格式化时间戳
- */
+function escapeUserMessageHeadingsAndLists(text) {
+  if (!text) return text;
+  return text
+    .replace(/^([ \t]*)(#+)([ \t]|$)/gm, '$1\\$2$3')
+    .replace(/^([ \t]*)(-) +/gm, '$1\\- ')
+    .replace(/^(---+|===+)$/gm, '\u200B$1');
+}
+
+function renderMarkdown(text) {
+  if (typeof marked !== "undefined") {
+    try {
+      return marked.parse(text.replace(/\n\s*\n/g, "\n\n"));
+    } catch (error) {
+      console.warn("Markdown解析错误:", error);
+      return escapeHtml(text);
+    }
+  }
+  return escapeHtml(text);
+}
+
 export function formatDate(timestamp) {
   if (!timestamp) return "未知时间";
   const date = new Date(timestamp * 1000);
@@ -59,7 +52,7 @@ export function formatDate(timestamp) {
   });
 }
 
-export function formatDateOnly(date) {
+function formatDateOnly(date) {
   return date.toLocaleString("zh-CN", {
     year: "numeric",
     month: "2-digit",
@@ -67,119 +60,15 @@ export function formatDateOnly(date) {
   }).replaceAll("/", "-");
 }
 
-/**
- * 防抖函数
- */
-function debounce(fn, wait) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => fn.apply(this, args), wait);
-  };
-}
-
-function escapeUserMessageHeadingsAndLists(text) {
-  if (!text) return text;
-  return text
-    .replace(/^([ \t]*)(#+)([ \t]|$)/gm, '$1\\$2$3')
-    .replace(/^([ \t]*)(-) +/gm, '$1\\- ');
-}
-
-// ==================== UIManager 主类 ====================
-
+// UI状态管理
 class UIManager {
   constructor() {
-    // 数据缓存
-    this.allConversations = [];
-    this.filteredConversations = [];
     this.currentConversation = null;
-
-    // 渲染缓存：id -> 完整 HTML 字符串
-    this.conversationCache = new Map();
-
-    // Markdown 异步解析
-    this.markdownWorker = createMarkdownWorker();
-    this.markdownCache = new Map(); // id -> HTML
-    this.pendingMarkdown = new Set(); // 正在解析的 ID
-
-    // 虚拟滚动（可选）
-    this.enableVirtualScroll = false;
-    this.virtualItemHeight = 90; // 预估每条消息高度
-    this.virtualViewport = null;
-
-    // 事件绑定标志
-    this.eventsBound = false;
-
-    // 初始化事件
-    this.initEvents();
+    this.filteredConversations = [];
+    this.allConversations = [];
   }
 
-  // ==================== 初始化与事件绑定 ====================
-
-  initEvents() {
-    if (this.eventsBound) return;
-    this.eventsBound = true;
-
-    const listContainer = document.getElementById("conversationList");
-    const searchBox = document.getElementById("searchBox");
-    const searchContentBox = document.getElementById("searchContentBox");
-    const sortSelect = document.getElementById("sortSelect");
-
-    // 事件委托：对话项点击 + 收藏按钮
-    listContainer.addEventListener("click", (e) => {
-      const item = e.target.closest(".conversation-item");
-      const favBtn = e.target.closest(".favorite-btn");
-
-      if (favBtn) {
-        e.stopPropagation();
-        const id = favBtn.closest(".conversation-item").dataset.id;
-        this.toggleFavorite(id);
-      } else if (item) {
-        const id = item.dataset.id;
-        this.selectConversation(id);
-      }
-    });
-
-    // 防抖搜索
-    searchBox.addEventListener(
-      "input",
-      debounce(() => {
-        searchContentBox.value = "";
-        this.filterConversations(searchBox.value, sortSelect.value);
-      }, 300)
-    );
-
-    searchContentBox.addEventListener(
-      "input",
-      debounce(() => {
-        searchBox.value = "";
-        this.filterConversationsByContent(
-          searchContentBox.value,
-          sortSelect.value
-        );
-      }, 300)
-    );
-
-    sortSelect.addEventListener("change", () => {
-      const term = searchBox.value || searchContentBox.value;
-      if (searchContentBox.value) {
-        this.filterConversationsByContent(term, sortSelect.value);
-      } else {
-        this.filterConversations(term, sortSelect.value);
-      }
-    });
-
-    // Worker 消息监听
-    this.markdownWorker.onmessage = (e) => {
-      const { id, html, success } = e.data;
-      this.markdownCache.set(id, html);
-      this.pendingMarkdown.delete(id);
-      this.rerenderVisibleMessages();
-    };
-  }
-
-  // ==================== 统计更新 ====================
-
+  // 更新统计数据
   updateStatistics(stats) {
     document.getElementById("totalConversations").textContent =
       stats.totalConversations;
@@ -190,290 +79,105 @@ class UIManager {
       stats.totalAssistantMessages;
   }
 
-  // ==================== 对话列表渲染 ====================
-
+  // 渲染对话列表
   renderConversationList(conversations) {
     const container = document.getElementById("conversationList");
-    const fragment = document.createDocumentFragment();
 
-    conversations.forEach((conv) => {
-      const isFav = favoritesManager.isFavorite(conv.id);
-      const item = document.createElement("div");
-      item.className = "conversation-item";
-      item.dataset.id = conv.id;
+    const html = conversations
+      .map((conv) => {
+        const isFav = favoritesManager.isFavorite(conv.id);
+        const favClass = isFav ? "active" : "";
 
-      item.innerHTML = `
-        <div class="conversation-info">
-          <div class="conversation-title">${escapeHtml(
-            conv.title || "未命名对话"
-          )}</div>
-          <div class="conversation-meta">
-            ${conv.messageCount} 条消息 | 创建于 ${formatDate(conv.create_time)}
+        return `
+        <div 
+          class="conversation-item" 
+          onclick="uiManager.selectConversation('${conv.id}', event)" 
+          data-id="${conv.id}">
+          <div class="conversation-info">
+            <div class="conversation-title">
+              ${escapeHtml(conv.title || "未命名对话")}
+            </div>
+            <div class="conversation-meta">
+              ${conv.messageCount} 条消息 | 创建于 ${formatDate(
+          conv.create_time
+        )}
+            </div>
           </div>
+
+            <button class="favorite-btn ${favClass}" 
+                    onclick="uiManager.toggleFavorite('${conv.id}', event)"
+                    title="${isFav ? "取消收藏" : "收藏"}">
+              ${isFav ? "●" : "○"}
+            </button>
+
         </div>
-        <button class="favorite-btn ${isFav ? "active" : ""}" title="${
-        isFav ? "取消收藏" : "收藏"
-      }">
-          ${isFav ? "●" : "○"}
-        </button>
       `;
-
-      fragment.appendChild(item);
-    });
-
-    container.innerHTML = "";
-    container.appendChild(fragment);
-  }
-
-  // ==================== 对话选择与渲染 ====================
-
-  async selectConversation(id) {
-    // 高亮激活项
-    document.querySelectorAll(".conversation-item").forEach((item) => {
-      item.classList.remove("active");
-    });
-    const activeItem = document.querySelector(
-      `.conversation-item[data-id="${id}"]`
-    );
-    if (activeItem) activeItem.classList.add("active");
-
-    // 缓存命中 → 秒开
-    if (this.conversationCache.has(id)) {
-      this.displayConversationFromCache(id);
-      return;
-    }
-
-    // 加载数据
-    const conversation = await chatDB.getConversation(id);
-    if (!conversation) return;
-
-    this.currentConversation = conversation;
-    document.getElementById("conversationTitle").textContent =
-      conversation.title || "未命名对话";
-    document.getElementById("exportBtn").style.display = "inline-block";
-
-    // 开始分片渲染
-    this.renderConversationWithBatching(conversation);
-  }
-
-  displayConversationFromCache(id) {
-    const container = document.getElementById("messagesContainer");
-    container.innerHTML = this.conversationCache.get(id);
-    container.scrollTop = 0;
-    this.setupVirtualScrollIfNeeded();
-  }
-
-  // ==================== 分片 + 异步 Markdown 渲染 ====================
-
-  renderConversationWithBatching(conversation) {
-    const container = document.getElementById("messagesContainer");
-    container.innerHTML = '<div class="loading-messages">加载中...</div>';
-
-    const messages = conversation.messages || [];
-    let index = 0;
-    const batchSize = 8;
-
-    const renderBatch = () => {
-      if (index >= messages.length) {
-        container.innerHTML = this.conversationCache.get(conversation.id) || "";
-        this.setupVirtualScrollIfNeeded();
-        return;
-      }
-
-      const fragment = document.createDocumentFragment();
-      const end = Math.min(index + batchSize, messages.length);
-
-      for (let i = index; i < end; i++) {
-        const msgDiv = this.createMessageElement(messages[i]);
-        fragment.appendChild(msgDiv);
-      }
-
-      // 替换 loading 或追加
-      if (index === 0) {
-        container.innerHTML = "";
-      }
-      container.appendChild(fragment);
-
-      index = end;
-      requestIdleCallback(renderBatch, { timeout: 200 });
-    };
-
-    // 预生成完整 HTML 用于缓存
-    setTimeout(() => {
-      const fullHTML = messages
-        .map((msg) => this.renderMessageSync(msg))
-        .join("");
-      this.conversationCache.set(conversation.id, fullHTML);
-    }, 0);
-
-    requestIdleCallback(renderBatch);
-  }
-
-  createMessageElement(msg) {
-    const div = document.createElement("div");
-    div.className = `message ${msg.role}`;
-    div.dataset.messageId = msg.id;
-
-    const displayName = msg.role === "user" ? "You" : "Agent";
-
-    // 优先使用缓存
-    let contentHTML = this.markdownCache.get(msg.id);
-    if (!contentHTML && !this.pendingMarkdown.has(msg.id)) {
-      this.pendingMarkdown.add(msg.id);
-      const textToParse = msg.role === "user" 
-        ? escapeUserMessageHeadingsAndLists(msg.content) 
-        : msg.content;
-      this.markdownWorker.postMessage({ id: msg.id, text: textToParse });
-      contentHTML = '<div class="message-content">加载中...</div>';
-    } else if (!contentHTML) {
-      contentHTML = '<div class="message-content">加载中...</div>';
-    } else {
-      contentHTML = `<div class="message-content">${contentHTML}</div>`;
-    }
-
-    div.innerHTML = `
-      <div class="message-author">${displayName}</div>
-      ${contentHTML}
-      <div class="message-time">${formatDate(msg.createTime)}</div>
-    `;
-
-    return div;
-  }
-
-  // 同步渲染（用于缓存）
-  renderMessageSync(msg) {
-    const displayName = msg.role === "user" ? "You" : "Agent";
-    const textToParse = msg.role === "user" 
-      ? escapeUserMessageHeadingsAndLists(msg.content) 
-      : msg.content;
-    const content = this.markdownCache.get(msg.id) || marked.parse(textToParse);
-    return `
-      <div class="message ${msg.role}" data-message-id="${msg.id}">
-        <div class="message-author">${displayName}</div>
-        <div class="message-content">${content}</div>
-        <div class="message-time">${formatDate(msg.createTime)}</div>
-      </div>
-    `.trim();
-  }
-
-  // 重新渲染可见消息（Worker 完成时）
-  rerenderVisibleMessages() {
-    const container = document.getElementById("messagesContainer");
-    const messages = container.querySelectorAll(".message");
-    messages.forEach((msgEl) => {
-      const id = msgEl.dataset.messageId;
-      if (this.markdownCache.has(id)) {
-        const contentEl = msgEl.querySelector(".message-content");
-        if (contentEl && contentEl.textContent === "加载中...") {
-          contentEl.innerHTML = this.markdownCache.get(id);
-        }
-      }
-    });
-  }
-
-  // ==================== 收藏功能 ====================
-
-  async toggleFavorite(conversationId) {
-    const conversation = this.allConversations.find(
-      (c) => c.id === conversationId
-    );
-    if (!conversation) return;
-
-    const isFavorited = await favoritesManager.toggleFavorite(
-      conversationId,
-      conversation
-    );
-    const btn = document.querySelector(
-      `.conversation-item[data-id="${conversationId}"] .favorite-btn`
-    );
-
-    if (btn) {
-      btn.classList.toggle("active", isFavorited);
-      btn.textContent = isFavorited ? "●" : "○";
-      btn.title = isFavorited ? "取消收藏" : "收藏";
-    }
-
-    await this.renderFavoritesList();
-  }
-
-  // ==================== 收藏列表 ====================
-
-  async renderFavoritesList() {
-    const container = document.getElementById("favoritesList");
-    const favorites = await favoritesManager.getAllFavorites();
-
-    document.getElementById("favoritesCount").textContent = favorites.length;
-
-    if (favorites.length === 0) {
-      container.innerHTML = '<div class="empty-state"><p>暂无收藏</p></div>';
-      return;
-    }
-
-    const html = favorites
-      .map(
-        (fav) => `
-      <div class="favorite-item" onclick="uiManager.selectConversation('${
-        fav.conversationId
-      }')">
-        <div class="favorite-title">${escapeHtml(
-          fav.title || "未命名对话"
-        )}</div>
-        <div class="favorite-time">${formatDate(fav.timestamp / 1000)}</div>
-      </div>
-    `
-      )
+      })
       .join("");
 
     container.innerHTML = html;
   }
 
-  // ==================== 搜索与排序 ====================
-
-  filterConversations(searchTerm, sortBy) {
-    this.filteredConversations = this.allConversations.filter((conv) =>
-      (conv.title || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    this.applySorting(sortBy);
-    this.renderConversationList(this.filteredConversations);
-  }
-
-  filterConversationsByContent(searchTerm, sortBy) {
-    this.filteredConversations = this.allConversations.filter((conv) =>
-      conv.messages?.some((msg) =>
-        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    this.applySorting(sortBy);
-    this.renderConversationList(this.filteredConversations);
-  }
-
-  applySorting(sortBy) {
-    switch (sortBy) {
-      case "update":
-        this.filteredConversations.sort(
-          (a, b) => (b.create_time || 0) - (a.create_time || 0)
-        );
-        break;
-      case "create":
-        this.filteredConversations.sort(
-          (a, b) => (a.create_time || 0) - (b.create_time || 0)
-        );
-        break;
-      case "messages":
-        this.filteredConversations.sort(
-          (a, b) => b.messageCount - a.messageCount
-        );
-        break;
-      case "title":
-        this.filteredConversations.sort((a, b) =>
-          (a.title || "").localeCompare(b.title || "")
-        );
-        break;
+  // 选择对话
+  async selectConversation(id, event) {
+    if (event) {
+      event.stopPropagation();
     }
+
+    // 从数据库加载完整对话数据
+    const conversation = await chatDB.getConversation(id);
+    if (!conversation) return;
+
+    this.currentConversation = conversation;
+
+    // 更新UI状态
+    document.querySelectorAll(".conversation-item").forEach((item) => {
+      item.classList.remove("active");
+    });
+
+    const selectedItem = document.querySelector(
+      `.conversation-item[data-id="${id}"]`
+    );
+    if (selectedItem) {
+      selectedItem.classList.add("active");
+    }
+
+    this.displayConversation(conversation);
+    document.getElementById("generateBtn").style.display = "inline-block";
   }
 
-  // ==================== 趋势图 ====================
+  // 显示对话详情
+  displayConversation(conversation) {
+    const title = document.getElementById("conversationTitle");
+    const container = document.getElementById("messagesContainer");
 
+    title.textContent = conversation.title;
+    const messages = conversation.messages || [];
+
+    const html = messages.map((msg) => this.renderMessage(msg)).join("");
+
+    container.innerHTML = html;
+    container.scrollTop = 0;
+  }
+
+  // 渲染单条消息
+  renderMessage(msg) {
+    const roleClass = msg.role;
+    // const displayName = msg.role === "user" ? "You" : "Agent";
+    const contentHtml = msg.role === "user" ? renderMarkdown(escapeUserMessageHeadingsAndLists(msg.content)) : renderMarkdown(msg.content);
+
+    return `
+      <div class="message ${roleClass}" data-message-id="${msg.id}">
+        <div class="message-content">${contentHtml}</div>
+        <div class="message-time">
+          ${formatDate(msg.createTime)}
+        </div>
+      </div>
+    `;
+  }
+  // <div class="message-author">${displayName}</div>
+
+  // 渲染每日趋势图
   renderDailyTrendChart(dailyData) {
     const container = document.getElementById("dailyTrendChart");
     container.innerHTML = "";
@@ -565,24 +269,163 @@ class UIManager {
     );
   }
 
-  // ==================== 虚拟滚动（可选） ====================
+  // 渲染收藏列表
+  async renderFavoritesList() {
+    const container = document.getElementById("favoritesList");
+    const favorites = await favoritesManager.getAllFavorites();
 
-  setupVirtualScrollIfNeeded() {
-    if (
-      !this.enableVirtualScroll ||
-      this.currentConversation.messageCount < 100
-    )
+    if (favorites.length === 0) {
+      document.getElementById("favoritesCount").textContent = 0;
+      container.innerHTML = '<div class="empty-state"><p>暂无收藏</p></div>';
       return;
+    }
 
-    const container = document.getElementById("messagesContainer");
-    if (this.virtualViewport) return;
+    const html = favorites
+      .map((fav) => {
+        return `
+        <div class="favorite-item" onclick="uiManager.selectConversation('${
+          fav.conversationId
+        }')">
+          <div class="favorite-title">${escapeHtml(
+            fav.title || "未命名对话"
+          )}</div>
+          <div class="favorite-time">${formatDate(fav.timestamp / 1000)}</div>
+        </div>
+      `;
+      })
+      .join("");
 
-    // 简单实现，后续可替换为 virtua
-    // 略（可按需扩展）
+    container.innerHTML = html;
+
+    // 更新收藏统计
+    document.getElementById("favoritesCount").textContent = favorites.length;
   }
 
-  // ==================== UI 状态控制 ====================
+  // 切换收藏状态
+  async toggleFavorite(conversationId, event) {
+    if (event) {
+      event.stopPropagation();
+    }
 
+    const conversation = this.allConversations.find(
+      (c) => (c.id || c.title) === conversationId
+    );
+
+    const isFavorited = await favoritesManager.toggleFavorite(
+      conversationId,
+      conversation
+    );
+
+    // 更新按钮状态
+    const btn = document.querySelector(
+      `.conversation-item[data-id="${conversationId}"] .favorite-btn`
+    );
+    if (btn) {
+      if (isFavorited) {
+        btn.classList.add("active");
+        btn.textContent = "●";
+        btn.title = "取消收藏";
+      } else {
+        btn.classList.remove("active");
+        btn.textContent = "○";
+        btn.title = "收藏";
+      }
+    }
+
+    // 刷新收藏列表
+    await this.renderFavoritesList();
+  }
+
+  // 筛选对话
+  filterConversations(searchTerm, sortBy) {
+    // 搜索过滤
+    this.filteredConversations = this.allConversations.filter((conv) => {
+      const titleMatch = (conv.title || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+      const contentMatch = conv.messages?.some((msg) =>
+        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      return titleMatch;
+    });
+
+    // 排序
+    switch (sortBy) {
+      case "update":
+        this.filteredConversations.sort(
+          (a, b) => (b.create_time || 0) - (a.create_time || 0)
+        );
+        break;
+      case "create":
+        this.filteredConversations.sort(
+          (a, b) => (a.create_time || 0) - (b.create_time || 0)
+        );
+        break;
+      case "messages":
+        this.filteredConversations.sort(
+          (a, b) => b.messageCount - a.messageCount
+        );
+        break;
+      case "title":
+        this.filteredConversations.sort((a, b) =>
+          (a.title || "").localeCompare(b.title || "")
+        );
+        break;
+      case "favorites":
+        this.filteredConversations = this.filteredConversations.filter((conv) =>
+          favoritesManager.isFavorite(conv.id || conv.title)
+        );
+        break;
+    }
+
+    this.renderConversationList(this.filteredConversations);
+  }
+
+  filterConversationsByContent(searchTerm, sortBy) {
+    // 搜索过滤
+    this.filteredConversations = this.allConversations.filter((conv) => {
+      const contentMatch = conv.messages?.some((msg) =>
+        msg.content.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      return contentMatch;
+    });
+
+    // 排序
+    switch (sortBy) {
+      case "update":
+        this.filteredConversations.sort(
+          (a, b) => (b.create_time || 0) - (a.create_time || 0)
+        );
+        break;
+      case "create":
+        this.filteredConversations.sort(
+          (a, b) => (a.create_time || 0) - (b.create_time || 0)
+        );
+        break;
+      case "messages":
+        this.filteredConversations.sort(
+          (a, b) => b.messageCount - a.messageCount
+        );
+        break;
+      case "title":
+        this.filteredConversations.sort((a, b) =>
+          (a.title || "").localeCompare(b.title || "")
+        );
+        break;
+      case "favorites":
+        this.filteredConversations = this.filteredConversations.filter((conv) =>
+          favoritesManager.isFavorite(conv.id || conv.title)
+        );
+        break;
+    }
+
+    this.renderConversationList(this.filteredConversations);
+  }
+
+  // 显示/隐藏界面元素
   showLoading() {
     document.getElementById("uploadSection").classList.add("hidden");
     document.getElementById("emptyState").classList.add("hidden");
@@ -606,8 +449,10 @@ class UIManager {
   }
 }
 
-// ==================== 导出单例 ====================
-
+// 导出单例
 const uiManager = new UIManager();
+
+// 全局导出供HTML调用
 window.uiManager = uiManager;
+
 export default uiManager;

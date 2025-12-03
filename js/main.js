@@ -23,7 +23,7 @@ async function initApp() {
     setupFileHandling();
     setupSearch();
     setupThemeToggle();
-    loadTheme();
+    // loadTheme();
 
     // 尝试从数据库加载已有数据
     const conversations = await chatDB.getAllConversations();
@@ -153,35 +153,11 @@ async function backToUpload() {
 }
 
 // 导出功能
-async function exportConversation() {
-  const conversation = uiManager.currentConversation;
-  const markdown = generateConversationMarkdown(conversation);
-  const filename = conversation.title || "untitled";
-  downloadMarkdown(markdown, `${filename}.md`);
-}
-
 async function exportAllData() {
   const conversations = await chatDB.getAllConversations(true);
   conversations.sort((a, b) => (b.create_time || 0) - (a.create_time || 0));
   const markdown = generateAllConversationsMarkdown(conversations);
   downloadMarkdown(markdown, "所有对话的MarkDown文件.md");
-}
-
-// 生成单个对话的 Markdown
-function generateConversationMarkdown(conversation) {
-  let markdown = `# ${conversation.title || "未命名对话"}\n\n`;
-  markdown += `create_time: ${formatDate(conversation.create_time)}\n\n`;
-  markdown += `messages_count: ${conversation.messageCount}\n\n`;
-
-  if (conversation.messages && conversation.messages.length > 0) {
-    conversation.messages.forEach((msg) => {
-      const roleLabel = msg.role === "user" ? "You" : "Agent";
-      markdown += `**${roleLabel}**\n\n`;
-      markdown += `${msg.content}\n\n`;
-      markdown += `*${formatDate(msg.createTime)}*\n\n`;
-    });
-  }
-  return markdown;
 }
 
 // 导出收藏对话的 Markdown
@@ -210,8 +186,8 @@ function generateAllConversationsMarkdown(conversations) {
     markdown += `create_time: ${formatDate(conv.create_time)}\n\n`;
     markdown += `messages_count: ${conv.messageCount}\n\n`;
     conv.messages.forEach((msg) => {
-      const roleLabel = msg.role === "user" ? "You" : "Agent";
-      markdown += `**${roleLabel}**\n\n`;
+      // const roleLabel = msg.role === "user" ? "You" : "Agent";
+      // markdown += `**${roleLabel}**\n\n`;
       markdown += `${msg.content}\n\n`;
       markdown += `*${formatDate(msg.createTime)}*\n\n`;
     });
@@ -245,42 +221,34 @@ function setupThemeToggle() {
 }
 
 function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute("data-theme");
-  const newTheme = currentTheme === "dark" ? "light" : "dark";
-  setTheme(newTheme);
-  saveTheme(newTheme);
+  const Theme = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+  setTheme(Theme);
+  // saveTheme(Theme);
 }
 
 function setTheme(theme) {
   const root = document.documentElement;
   root.setAttribute("data-theme", theme);
-
-  setTimeout(() => {
-    root.style.transition = "";
-  }, 300);
 }
 
-function saveTheme(theme) {
-  try {
-    localStorage.setItem("chatgpt-viewer-theme", theme);
-  } catch (error) {
-    console.warn("无法保存主题设置:", error);
-  }
-}
+// function saveTheme(theme) {
+//   localStorage.setItem("chatgpt-viewer-theme", theme);
+//   console.log('已保存主题')
+// }
 
-function loadTheme() {
-  try {
-    const savedTheme = localStorage.getItem("chatgpt-viewer-theme");
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light";
-    const theme = savedTheme || systemTheme;
-    setTheme(theme);
-  } catch (error) {
-    setTheme("light");
-  }
-}
+// function loadTheme() {
+//   try {
+//     const savedTheme = localStorage.getItem("chatgpt-viewer-theme");
+//     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
+//       .matches
+//       ? "dark"
+//       : "light";
+//     const theme = savedTheme || systemTheme;
+//     setTheme(theme);
+//   } catch (error) {
+//     setTheme("light");
+//   }
+// }
 
 // 清空数据库
 async function clearDatabase() {
@@ -291,7 +259,6 @@ async function clearDatabase() {
 
 // 全局导出供HTML调用
 window.backToUpload = backToUpload;
-window.exportConversation = exportConversation;
 window.exportAllData = exportAllData;
 window.exportFavorites = exportFavorites;
 window.clearDatabase = clearDatabase;
