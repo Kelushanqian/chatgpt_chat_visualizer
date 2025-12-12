@@ -25,6 +25,9 @@ or
 
 搜索排序
 - 搜索框支持根据标题或内容查找。
+- 能定位的全文搜索可以去这里：  
+  [https://kelushanqian.github.io/json_viewer/](https://kelushanqian.github.io/json_viewer/) 或  
+  [https://json-viewer-teal-two.vercel.app/](https://json-viewer-teal-two.vercel.app/)。
 - 支持按时间、消息数或标题首字母排序。
 
 其他说明

@@ -138,6 +138,8 @@ function setupSearch() {
       uiManager.filterConversationsByTitle(searchTitleBox.value, sortSelect.value);
     } else if (searchContentBox.value) {
       uiManager.filterConversationsByContent(searchContentBox.value, sortSelect.value);
+    } else {
+      uiManager.filterConversationsByTitle('', sortSelect.value)
     }
   });
 }

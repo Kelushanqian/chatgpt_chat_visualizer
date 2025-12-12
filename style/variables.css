@@ -6,10 +6,10 @@
   --bg-select: rgba(244, 231, 241, 0.5);
 
   /* 文本色 */
-  --text-primary: #928997;
+  --text-primary: #978995;
   --text-secondary: #8b7088;
   --text-muted: #9b8b9b;
-  --text-em: #d1a6b0;
+  --text-em: #d29fae;
 
   /* 主色调 */
   --color-primary: #b38eb6;
@@ -43,10 +43,10 @@
   --bg-select: rgba(80, 60, 80, 0.5);
 
   /* 文本色 */
-  --text-primary: #dadada;
+  --text-primary: #c5c2cb;
   --text-secondary: #cec2ce;
-  --text-muted: #f1f1f1;
-  --text-em: #c8bdc8;
+  --text-muted: #cbcbcb;
+  --text-em: #e9d7e9;
 
   /* 主色调 */
   --color-primary: #a58cba;
