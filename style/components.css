@@ -408,19 +408,18 @@ header p {
 .message-content code {
   background: var(--bg-card);
   padding: 0 3px;
-  font-family: "Consolas", monospace;
+  font-family: "Consolas", serif;
   font-size: 0.85rem;
   border: 1px solid var(--border-primary);
 }
 
 .message-content pre {
-  background: var(--bg-stat);
-  padding: 1rem;
-  margin: 0.3em 0;
+  background: var(--bg-card);
+  padding: 0 5px;
   white-space: pre-wrap; /* 保持空格和换行，但允许自动换行 */
   word-wrap: break-word; /* 长单词强制换行 */
   border: 1px solid var(--border-primary);
-  border-radius: 5px;
+  /* border-radius: 15px; */
 }
 
 .message-content pre code {
